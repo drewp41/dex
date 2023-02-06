@@ -4,4 +4,20 @@
   grid-area: sidebar;
   background-color: v.$bg-color;
   color: v.$text-color;
+  padding: 36px 24px;
+
+  border-right: 1px solid red;
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 48px;
+
+    .text {
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 28px;
+    }
+  }
 }

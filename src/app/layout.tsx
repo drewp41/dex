@@ -1,7 +1,8 @@
-import './globals.scss';
-import localFont from '@next/font/local';
-import Sidebar from '@/components/Sidebar';
-import Footer from '@/components/Footer';
+import './globals.scss'
+import localFont from '@next/font/local'
+import Sidebar from '@/components/Sidebar'
+import Footer from '@/components/Footer'
+import { Providers } from '@/providers'
 
 const gilroy = localFont({
   src: [
@@ -41,7 +42,7 @@ const gilroy = localFont({
       style: 'normal',
     },
     {
-      path: '../assets/fonts/Gilroy/Gilroy-ExtraBold.woff2',
+      path: '../assets/fonts/Gilroy/Gilroy-Extrabold.woff2',
       weight: '800',
       style: 'normal',
     },
@@ -56,21 +57,23 @@ const gilroy = localFont({
       style: 'normal',
     },
   ],
-});
+})
 
-export default function RootLayout({
-  children,
-}: {
+interface IRootLayout {
   children: React.ReactNode
-}) {
+}
+
+export default function RootLayout({ children }: IRootLayout) {
   return (
     <html lang="en" className={gilroy.className}>
       <head />
-      <body className='mainBody'>
-        <Sidebar />
-        {children}
-        <Footer />
+      <body className="mainBody">
+        <Providers>
+          <Sidebar />
+          {children}
+          <Footer />
+        </Providers>
       </body>
-    </html >
+    </html>
   )
 }
