@@ -3,7 +3,7 @@
 import styles from './page.module.scss';
 
 async function getQuote() {
-  const res = await fetch('https://api.example.com/...');
+  // const res = await fetch('https://api.example.com/...');
   // The return value is *not* serialized
   // You can return Date, Map, Set, etc.
 
@@ -17,7 +17,7 @@ async function getQuote() {
 }
 
 export default async function Home() {
-  const data = await getQuote();
+  // const data = await getQuote();
 
-  return <div className={styles.main}>{data}</div>;
+  return <div className={styles.main}>hi</div>;
 }

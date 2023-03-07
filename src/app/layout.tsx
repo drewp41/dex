@@ -65,6 +65,14 @@ interface IRootLayout {
   children: React.ReactNode;
 }
 
+export const metadata = {
+  title: 'Swap Aggregator',
+  description: 'Dex aggregator',
+  icons: {
+    icon: { url: '/favicon.svg', type: 'image/svg' },
+  },
+};
+
 export default function RootLayout({ children }: IRootLayout) {
   return (
     <html className={gilroy.className} lang='en'>
