@@ -1,8 +1,9 @@
-'use client'
+'use client';
 
-import styles from './index.module.scss'
-import { ConnectKitButton } from 'connectkit'
+import { ConnectKitButton } from 'connectkit';
+
+// import styles from './index.module.scss';
 
 export default function ConnectWallet() {
-  return <ConnectKitButton />
+  return <ConnectKitButton />;
 }

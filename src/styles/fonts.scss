@@ -1,63 +1,71 @@
 /* Gilroy */
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Thin.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 100;
+  src: url('../assets/fonts/Gilroy/Gilroy-Thin.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-UltraLight.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 200;
+  src: url('../assets/fonts/Gilroy/Gilroy-UltraLight.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Light.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 300;
+  src: url('../assets/fonts/Gilroy/Gilroy-Light.woff2') format('woff2');
   ascent-override: 100%;
 }
 // Makes the default font weight 500 (by setting the 400 weight to "medium")
 @font-face {
-  font-family: 'Gilroy';
+  font-family: Gilroy;
+  font-weight: 400;
   // src: url('../assets/fonts/Gilroy/Gilroy-Regular.woff2') format('woff2');
   src: url('../assets/fonts/Gilroy/Gilroy-Medium.woff2') format('woff2');
-  font-weight: 400;
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Medium.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 500;
+  src: url('../assets/fonts/Gilroy/Gilroy-Medium.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Semibold.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 600;
+  src: url('../assets/fonts/Gilroy/Gilroy-Semibold.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Bold.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 700;
+  src: url('../assets/fonts/Gilroy/Gilroy-Bold.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Extrabold.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 800;
+  src: url('../assets/fonts/Gilroy/Gilroy-Extrabold.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Black.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 900;
+  src: url('../assets/fonts/Gilroy/Gilroy-Black.woff2') format('woff2');
   ascent-override: 100%;
 }
+
 @font-face {
-  font-family: 'Gilroy';
-  src: url('../assets/fonts/Gilroy/Gilroy-Heavy.woff2') format('woff2');
+  font-family: Gilroy;
   font-weight: 1000;
+  src: url('../assets/fonts/Gilroy/Gilroy-Heavy.woff2') format('woff2');
   ascent-override: 100%;
 }

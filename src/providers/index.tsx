@@ -1,20 +1,19 @@
-'use client'
+'use client';
 
-import { WagmiConfig, createClient } from 'wagmi'
-import { ConnectKitProvider, getDefaultClient } from 'connectkit'
-import { useEffect } from 'react'
+import { ConnectKitProvider, getDefaultClient } from 'connectkit';
+import { createClient, WagmiConfig } from 'wagmi';
 
-const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID
+const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 
 const client = createClient(
   getDefaultClient({
     appName: 'dex',
     alchemyId,
   })
-)
+);
 
 interface IProviders {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export const Providers = ({ children }: IProviders) => {
@@ -29,5 +28,5 @@ export const Providers = ({ children }: IProviders) => {
         {children}
       </ConnectKitProvider>
     </WagmiConfig>
-  )
-}
+  );
+};

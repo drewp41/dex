@@ -1,7 +1,7 @@
 import localFont from 'next/font/local';
 
 import Footer from '@/components/Footer';
-import Sidebar from '@/components/Sidebar';
+import Header from '@/components/Header';
 import { Providers } from '@/providers';
 
 import './globals.scss';
@@ -77,9 +77,9 @@ export default function RootLayout({ children }: IRootLayout) {
   return (
     <html className={gilroy.className} lang='en'>
       <head />
-      <body className='mainBody'>
+      <body className='main-body'>
         <Providers>
-          <Sidebar />
+          <Header />
           {children}
           <Footer />
         </Providers>
