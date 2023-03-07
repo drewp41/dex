@@ -1,3 +1,102 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb-typescript",
+    "prettier",
+    "next"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json",
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "prettier",
+    "simple-import-sort"
+  ],
+  "rules": {
+    // Instead of using a .prettierrc file
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "jsxSingleQuote": true,
+        "trailingComma": "es5",
+        "semi": true
+      }
+    ],
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-props-no-spreading": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-sort-props": [
+        2,
+        {
+            "callbacksLast": true,
+            "shorthandFirst": false,
+            "shorthandLast": true,
+            "ignoreCase": true,
+            "noSortAlphabetically": false
+        }
+    ],
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error",
+    "no-duplicate-imports": "error"
+  },
+  "overrides": [
+    // Override "simple-import-sort" config
+    {
+      "files": [
+        "*.js",
+        "*.jsx",
+        "*.ts",
+        "*.tsx"
+      ],
+      "rules": {
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              // Packages `react` related packages come first.
+              [
+                "^react",
+                "^@?\\w"
+              ],
+              // Internal packages.
+              [
+                "^(@|components)(/.*|$)"
+              ],
+              // Side effect imports.
+              [
+                "^\\u0000"
+              ],
+              // Parent imports. Put `..` last.
+              [
+                "^\\.\\.(?!/?$)",
+                "^\\.\\./?$"
+              ],
+              // Other relative imports. Put same-folder imports and `.` last.
+              [
+                "^\\./(?=.*/)(?!/?$)",
+                "^\\.(?!/?$)",
+                "^\\./?$"
+              ],
+              // Style imports.
+              [
+                "^.+\\.?(css)$"
+              ]
+            ]
+          }
+        ]
+      }
+    }
+  ]
 }

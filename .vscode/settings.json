@@ -1,4 +1,38 @@
+// Install ESLint extension by Microsoft, and Prettier extension by Prettier
+// No other ormatter should be installed for JS/TS/CSS/SCSS :)
 {
+  // Basic editor config
+  "editor.tabSize": 2,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": false,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true,
+    // If this is on, unused imports will be removed on save
+    "source.organizeImports": false
+  },
+  // Apply Eslint extension for all file styles except css and scss
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "eslint.enable": true,
+  // Styling config
+  "css.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": true,
+  "stylelint.config": null,
+  "stylelint.configFile": ".stylelintrc",
+  "stylelint.validate": [
+    "css",
+    "scss"
+  ],
+  "[css]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "stylelint.vscode-stylelint"
+  },
   "typescript.tsdk": "node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true
 }

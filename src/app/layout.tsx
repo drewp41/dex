@@ -1,8 +1,10 @@
-import './globals.scss'
-import localFont from '@next/font/local'
-import Sidebar from '@/components/Sidebar'
-import Footer from '@/components/Footer'
-import { Providers } from '@/providers'
+import localFont from 'next/font/local';
+
+import Footer from '@/components/Footer';
+import Sidebar from '@/components/Sidebar';
+import { Providers } from '@/providers';
+
+import './globals.scss';
 
 const gilroy = localFont({
   src: [
@@ -57,17 +59,17 @@ const gilroy = localFont({
       style: 'normal',
     },
   ],
-})
+});
 
 interface IRootLayout {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default function RootLayout({ children }: IRootLayout) {
   return (
-    <html lang="en" className={gilroy.className}>
+    <html className={gilroy.className} lang='en'>
       <head />
-      <body className="mainBody">
+      <body className='mainBody'>
         <Providers>
           <Sidebar />
           {children}
@@ -75,5 +77,5 @@ export default function RootLayout({ children }: IRootLayout) {
         </Providers>
       </body>
     </html>
-  )
+  );
 }

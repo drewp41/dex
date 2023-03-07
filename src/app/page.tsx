@@ -1,5 +1,23 @@
-import styles from './page.module.scss'
+// import { providers } from 'ethers'
 
-export default function Home() {
-  return <div className={styles.main}>dex</div>
+import styles from './page.module.scss';
+
+async function getQuote() {
+  const res = await fetch('https://api.example.com/...');
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+
+  // Recommendation: handle errors
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data');
+  }
+
+  return res.json();
+}
+
+export default async function Home() {
+  const data = await getQuote();
+
+  return <div className={styles.main}>{data}</div>;
 }

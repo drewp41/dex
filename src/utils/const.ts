@@ -1,1 +1,1 @@
-export const test = 1;
+export const ONE_INCH_BASE_URL = 'fd';
