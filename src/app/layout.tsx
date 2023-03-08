@@ -23,11 +23,11 @@ const gilroy = localFont({
       weight: '300',
       style: 'normal',
     },
-    {
-      path: '../assets/fonts/Gilroy/Gilroy-Regular.woff2',
-      weight: '400',
-      style: 'normal',
-    },
+    // {
+    //   path: '../assets/fonts/Gilroy/Gilroy-Regular.woff2',
+    //   weight: '400',
+    //   style: 'normal',
+    // },
     {
       path: '../assets/fonts/Gilroy/Gilroy-Medium.woff2',
       weight: '500',
@@ -59,7 +59,8 @@ const gilroy = localFont({
       style: 'normal',
     },
   ],
-});
+  declarations: [{ prop: 'ascent-override', value: '100%' }],
+})
 
 interface IRootLayout {
   children: React.ReactNode;

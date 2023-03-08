@@ -22,7 +22,7 @@ export const Providers = ({ children }: IProviders) => {
       <ConnectKitProvider
         customTheme={{
           '--ck-font-family':
-            '"Gilroy", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
+            'var(--gilroy), "Times New Roman", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
         }}
       >
         {children}
