@@ -77,11 +77,13 @@ export default function RootLayout({ children }: IRootLayout) {
   return (
     <html className={gilroy.className} lang='en'>
       <head />
-      <body className='main-body'>
+      <body>
         <Providers>
-          <Header />
-          {children}
-          <Footer />
+          <div className='main-body'>
+            <Header />
+            {children}
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>

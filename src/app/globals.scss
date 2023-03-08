@@ -1,7 +1,22 @@
 @use '../styles/fonts.scss';
 
+:root {
+  --background-color: #1A1B1E;
+  --text-color: #C1C2C5;
+  --border-radius: 8px;
+  --card-color: #383838;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  background-color: var(--background-color);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
 .main-body {
-  // display: flex;
+  width: 1000px;
 }
 
 // CSS RESET
@@ -28,16 +43,6 @@
 html,
 body {
   height: 100%;
-}
-
-/*
-  Typographic tweaks!
-  4. Add accessible line-height
-  5. Improve text rendering
-*/
-body {
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.5;
 }
 
 /*
