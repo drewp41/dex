@@ -60,7 +60,7 @@ const gilroy = localFont({
     },
   ],
   declarations: [{ prop: 'ascent-override', value: '100%' }],
-})
+});
 
 interface IRootLayout {
   children: React.ReactNode;

@@ -1,51 +1,6 @@
 .box {
-  height: 200px;
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-.button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  color: #c2c2c2;
-  position: relative;
-  overflow: hidden;
-  transform: translateZ(0);
-  // Needed to mask some weird white pixels on the border
-  background: #2c2e30;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-  }
-
-  &::before {
-    background: linear-gradient(to bottom, #383a3c, #2c2e30);
-  }
-
-  &::after {
-    padding: 2px;
-    border-radius: 8px;
-    background: #2c2e30;
-    background-clip: content-box;
-    transition: background-color 0.15s;
-  }
-
-  &:hover {
-    cursor: pointer;
-
-    &::before {
-      // background: linear-gradient(to bottom, #404246, #383a3c);
-    }
-
-    &::after {
-      background: #303234;
-    }
-  }
+  justify-content: center;
+  height: 200px;
 }
