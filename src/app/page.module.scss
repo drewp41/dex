@@ -1,7 +1,6 @@
 .main {
   display: flex;
   position: relative;
-  height: 80vh;
   gap: 48px;
   margin-top: 64px;
 
@@ -15,7 +14,7 @@
       rgb(0 211 176 / 80%),
       rgb(255 255 255 / 0%)
     );
-    inset: 400px auto auto -250px;
+    inset: 350px auto auto -250px;
     filter: blur(48px);
   }
 

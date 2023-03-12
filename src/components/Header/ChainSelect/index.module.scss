@@ -1,0 +1,43 @@
+.chain-icon {
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.select-item-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.select-content {
+  overflow: hidden;
+  background-color: white;
+}
+
+.select-viewport {
+  padding: 6px;
+}
+
+.select-item {
+  display: flex;
+  position: relative;
+
+  &[data-highlighted] {
+    outline: none;
+    background-color: grey;
+    color: white;
+  }
+}
+
+.select-item-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+}
