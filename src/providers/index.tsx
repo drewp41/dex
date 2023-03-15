@@ -4,10 +4,10 @@ import { ConnectKitProvider, getDefaultClient } from 'connectkit';
 import {
   configureChains,
   createClient,
-  createStorage,
+  // createStorage,
   WagmiConfig,
 } from 'wagmi';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+// import { InjectedConnector } from 'wagmi/connectors/injected';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -15,7 +15,7 @@ import { CHAIN_LIST } from '@/utils/const';
 
 const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 
-const { chains, provider } = configureChains(CHAIN_LIST, [
+const { chains } = configureChains(CHAIN_LIST, [
   alchemyProvider({ apiKey: alchemyId!, priority: 0 }),
   publicProvider({ priority: 1 }),
 ]);
