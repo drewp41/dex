@@ -14,8 +14,10 @@ export default function Header() {
         <Image alt='Swap Icon' height={36} src={SwapIcon} width={36} priority />
         <div className={styles.text}>Swap Aggregator</div>
       </div>
-      <ChainSelect />
-      <ConnectWallet />
+      <div className={styles.right}>
+        <ChainSelect />
+        <ConnectWallet />
+      </div>
     </header>
   );
 }

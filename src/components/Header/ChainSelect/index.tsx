@@ -1,16 +1,17 @@
 'use client';
 
-import { forwardRef, ReactNode, Ref, useEffect } from 'react';
+import { forwardRef, ReactNode, Ref, useEffect, useState } from 'react';
 import { CheckIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 import * as Select from '@radix-ui/react-select';
 import Image from 'next/image';
-import { useNetwork, useSwitchNetwork } from 'wagmi';
+import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 
 import Arbitrum from '@/assets/images/arbitrum.svg';
 import Mainnet from '@/assets/images/mainnet.svg';
 import Optimism from '@/assets/images/optimism.svg';
 import Polygon from '@/assets/images/polygon.svg';
 import { Chain, CHAIN_ID_MAP, CHAIN_LIST } from '@/utils/const';
+import { fetchChainFromLocalStorage } from '@/utils/func';
 
 import styles from './index.module.scss';
 
@@ -29,6 +30,17 @@ const CHAIN_IMAGE_MAP: Record<Chain, any> = {
 export default function ChainSelect() {
   const { chain } = useNetwork();
   const { switchNetwork } = useSwitchNetwork();
+  const { isConnected } = useAccount();
+
+  function initChain() {
+    if (isConnected) {
+      return chain?.network!;
+    } else {
+      return fetchChainFromLocalStorage();
+    }
+  }
+
+  const [currChain, setCurrChain] = useState(() => initChain());
 
   const SelectItem = forwardRef(
     ({ value, children }: SelectItemProps, ref: Ref<HTMLDivElement>) => {
@@ -47,13 +59,27 @@ export default function ChainSelect() {
   SelectItem.displayName = 'SelectItem';
 
   const onChainChange = (value: string) => {
-    switchNetwork?.(CHAIN_ID_MAP[value as Chain]);
+    if (isConnected) {
+      switchNetwork?.(CHAIN_ID_MAP[value as Chain]);
+    } else {
+      setCurrChain(value as Chain);
+      window.localStorage.setItem('currChain', JSON.stringify(value));
+    }
   };
+
+  useEffect(() => {
+    if (isConnected) {
+      setCurrChain(chain?.network!);
+      window.localStorage.setItem('currChain', JSON.stringify(chain?.network!));
+    } else {
+      setCurrChain(fetchChainFromLocalStorage());
+    }
+  }, [chain, isConnected, setCurrChain]);
 
   return (
     <Select.Root
       defaultValue='homestead'
-      value={chain ? chain.network : 'homestead'}
+      value={currChain}
       onValueChange={onChainChange}
     >
       <Select.Trigger
