@@ -6,25 +6,14 @@ import * as Select from '@radix-ui/react-select';
 import Image from 'next/image';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 
-import Arbitrum from '@/assets/images/arbitrum.svg';
-import Mainnet from '@/assets/images/mainnet.svg';
-import Optimism from '@/assets/images/optimism.svg';
-import Polygon from '@/assets/images/polygon.svg';
-import { Chain, CHAIN_ID_MAP, CHAIN_LIST } from '@/utils/const';
+import { CHAIN_LIST } from '@/utils/const';
 import { fetchChainFromLocalStorage } from '@/utils/func';
 
 import styles from './index.module.scss';
 
 type SelectItemProps = {
-  value: Chain;
+  value: string;
   children: ReactNode;
-};
-
-const CHAIN_IMAGE_MAP: Record<Chain, any> = {
-  arbitrum: Arbitrum,
-  homestead: Mainnet,
-  optimism: Optimism,
-  matic: Polygon,
 };
 
 export default function ChainSelect() {
@@ -34,13 +23,13 @@ export default function ChainSelect() {
 
   function initChain() {
     if (isConnected) {
-      return chain?.network!;
+      return chain?.id.toString();
     } else {
       return fetchChainFromLocalStorage();
     }
   }
 
-  const [currChain, setCurrChain] = useState(() => initChain());
+  const [currChain, setCurrChain] = useState<string>(() => initChain());
 
   const SelectItem = forwardRef(
     ({ value, children }: SelectItemProps, ref: Ref<HTMLDivElement>) => {
@@ -58,23 +47,21 @@ export default function ChainSelect() {
   );
   SelectItem.displayName = 'SelectItem';
 
-  const onChainChange = (value: string) => {
+  const onChainChange = (chainId: string) => {
     if (isConnected) {
-      switchNetwork?.(CHAIN_ID_MAP[value as Chain]);
+      switchNetwork?.(parseInt(chainId));
     } else {
-      setCurrChain(value as Chain);
-      window.localStorage.setItem('currChain', JSON.stringify(value));
+      switchNetwork?.(parseInt(chainId));
+      setCurrChain(chainId);
+      window.localStorage.setItem('currChain', JSON.stringify(chainId));
     }
   };
 
   useEffect(() => {
-    if (isConnected) {
-      setCurrChain(chain?.network!);
-      window.localStorage.setItem('currChain', JSON.stringify(chain?.network!));
-    } else {
-      setCurrChain(fetchChainFromLocalStorage());
+    if (isConnected && chain) {
+      setCurrChain(chain.id.toString());
     }
-  }, [chain, isConnected, setCurrChain]);
+  }, [chain, isConnected]);
 
   return (
     <Select.Root
@@ -93,14 +80,16 @@ export default function ChainSelect() {
       </Select.Trigger>
       <Select.Portal>
         <Select.Content className={styles.selectContent} position='popper'>
-          <Select.Viewport className={styles.selectViewport}>
+          <Select.Viewport
+            className={`grey-border-box no-hover flipped ${styles.selectViewport}`}
+          >
             {CHAIN_LIST.map((chainObj) => (
-              <SelectItem key={chainObj.id} value={chainObj.network as Chain}>
+              <SelectItem key={chainObj.id} value={chainObj.id.toString()}>
                 <Image
                   alt={chainObj.network}
                   className={styles.chainIcon}
                   height={24}
-                  src={CHAIN_IMAGE_MAP[chainObj.network as Chain]}
+                  src={`/images/${chainObj.network}.svg`}
                   width={24}
                 />
                 {chainObj.name}

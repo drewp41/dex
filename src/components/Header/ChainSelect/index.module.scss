@@ -7,6 +7,10 @@
   display: flex;
   align-items: center;
   gap: 6px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .select-item-text {
@@ -17,7 +21,7 @@
 
 .select-content {
   overflow: hidden;
-  background-color: white;
+  border-radius: 8px;
 }
 
 .select-viewport {
@@ -27,6 +31,11 @@
 .select-item {
   display: flex;
   position: relative;
+  margin: 4px;
+  padding: 4px;
+  transition: background-color 0.1s;
+  border-radius: 4px;
+  cursor: pointer;
 
   &[data-highlighted] {
     outline: none;

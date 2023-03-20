@@ -6,6 +6,7 @@
   --border-radius: 8px;
   --card-color: #383838;
   --grey-linear-gradient: linear-gradient(to bottom, #383a3c, #2c2e30);
+  --full-grey-border: #383a3c;
 }
 
 body {
@@ -65,7 +66,11 @@ body {
   }
 }
 
-
+.flipped.grey-border-box {
+  &::before {
+    background: var(--full-grey-border);
+  }
+}
 
 
 
