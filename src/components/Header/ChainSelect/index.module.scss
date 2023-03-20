@@ -1,3 +1,23 @@
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 .chain-icon {
   overflow: hidden;
   border-radius: 50%;
@@ -7,6 +27,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  transition: width 0.5s;
 
   &:focus {
     outline: none;
@@ -22,10 +43,19 @@
 .select-content {
   overflow: hidden;
   border-radius: 8px;
+
+  &[data-state='open'] {
+    animation: fade-in 200ms ease-out;
+  }
+
+  &[data-state='closed'] {
+    animation: fade-out 200ms ease-out;
+  }
 }
 
 .select-viewport {
-  padding: 6px;
+  // Override grey-border-box styling
+  padding: 6px !important;
 }
 
 .select-item {
@@ -34,12 +64,12 @@
   margin: 4px;
   padding: 4px;
   transition: background-color 0.1s;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
 
   &[data-highlighted] {
     outline: none;
-    background-color: grey;
+    background-color: #484848;
     color: white;
   }
 }
