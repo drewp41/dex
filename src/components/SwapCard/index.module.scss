@@ -10,33 +10,44 @@
   background-color: var(--card-color);
 
   .input-group {
+    display: flex;
+    height: 100px;
+    padding: 16px 16px 40px;
+    transition: border 0.15s;
+    border: 1px solid #60606000;
+    border-radius: 8px;
+    background-color: #484848;
+
+    &:hover {
+      border: 1px solid #606060ff;
+    }
+
     .input {
-      position: relative;
       width: 100%;
-      border: 1px solid #808080;
-      border-radius: 8px;
-      background-color: #686868;
+      border: none;
+      outline: none;
+      background-color: #484848;
       color: #fff;
-      font-size: 24px;
+      font-size: 30px;
     }
 
     .token-btn {
-      position: absolute;
-      right: 40px;
-      height: 40px;
-      border: 1px solid #808080;
+      display: flex;
+      align-items: center;
+      border: none;
       border-radius: 8px;
-      background-color: #686868;
+      background-color: var(--card-color);
       color: #fff;
       cursor: pointer;
+      gap: 6px;
     }
   }
 
   .swap-btn {
     height: 40px;
-    border: 1px solid #808080;
+    border: 1px solid #606060;
     border-radius: 8px;
-    background-color: #686868;
+    background-color: #484848;
     color: #fff;
     cursor: pointer;
   }
