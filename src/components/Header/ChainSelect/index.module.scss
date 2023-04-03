@@ -26,8 +26,9 @@
 .select-trigger {
   display: flex;
   align-items: center;
-  gap: 6px;
+  padding: 8px 14px;
   transition: width 0.5s;
+  gap: 6px;
 
   &:focus {
     outline: none;

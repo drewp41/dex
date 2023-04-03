@@ -38,7 +38,6 @@ const client = createClient({
       chains,
       options: {
         projectId: '5ad1a034250732d55e41c87bc8835e8d',
-        version: '2',
       },
     }),
   ],

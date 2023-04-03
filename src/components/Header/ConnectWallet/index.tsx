@@ -10,7 +10,7 @@ export default function ConnectWallet() {
       <ConnectKitButton.Custom>
         {({ isConnected, show, ensName, truncatedAddress }) => {
           return (
-            <button className='grey-border-box' onClick={show}>
+            <button className={`${styles.btn} grey-border-box`} onClick={show}>
               {isConnected
                 ? ensName
                   ? ensName
