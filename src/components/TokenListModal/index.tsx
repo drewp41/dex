@@ -3,35 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 
-import { BACKUP_TOKEN_LIST } from '@/utils/const';
-
 import styles from './index.module.scss';
-
-async function getTokenList() {
-  const params = new URLSearchParams({
-    vs_currency: 'usd',
-    order: 'market_cap_desc',
-    per_page: '250',
-    page: '1',
-    sparkline: 'false',
-    locale: 'en',
-  });
-
-  const url = `https://api.coingecko.com/api/v3/coins/markets?${params.toString()}`;
-
-  const res = await fetch(url, { method: 'GET' });
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
-  // Recommendation: handle errors
-  if (!res.ok) {
-    return BACKUP_TOKEN_LIST;
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error('Failed to fetch data');
-  }
-
-  return res.json();
-}
 
 interface TokenListModalProps {
   isOpen: boolean;
@@ -44,11 +16,26 @@ export default function TokenListModal({
   closeModal,
   trigger,
 }: TokenListModalProps) {
+  const [originalData, setOriginalData] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    const filteredData = originalData.filter((token: any) => {
+      return (
+        token.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
+        token.symbol.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+    });
+    setData(filteredData);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
-      const d = await getTokenList();
+      const d = await (await fetch('/api/markets/')).json();
       setData(d);
+      setOriginalData(d);
     };
     fetchData();
   }, []);
@@ -60,7 +47,12 @@ export default function TokenListModal({
         <Dialog.Overlay className={styles.overlay} />
         <Dialog.Content className={styles.content}>
           <Dialog.Title className={styles.title}>Select Token</Dialog.Title>
-          <input className={styles.input} placeholder='USDC or 0xa0b86...' />
+          <input
+            className={styles.input}
+            placeholder='USDC or 0xa0b86...'
+            value={searchQuery}
+            onChange={onSearchChange}
+          />
           <div className={styles.tokenListContainer}>
             <div className={styles.topBlur} />
             <div className={styles.tokenList}>
