@@ -9,3 +9,7 @@ export function fetchChainFromLocalStorage() {
     return DEFAULT_CHAIN;
   }
 }
+
+export function isZeroInHex(hexString: string) {
+  return parseInt(hexString, 16) === 0;
+}

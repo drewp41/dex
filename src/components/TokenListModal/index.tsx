@@ -9,12 +9,14 @@ interface TokenListModalProps {
   isOpen: boolean;
   closeModal: () => void;
   trigger: React.ReactNode;
+  setToken: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function TokenListModal({
   isOpen,
   closeModal,
   trigger,
+  setToken,
 }: TokenListModalProps) {
   const [originalData, setOriginalData] = useState<any[]>([]);
   const [data, setData] = useState<any[]>([]);
@@ -40,6 +42,11 @@ export default function TokenListModal({
     fetchData();
   }, []);
 
+  const onTokenClick = (token: any) => {
+    setToken(token);
+    closeModal();
+  };
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={() => isOpen && closeModal()}>
       <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
@@ -57,7 +64,11 @@ export default function TokenListModal({
             <div className={styles.topBlur} />
             <div className={styles.tokenList}>
               {data.map((token: any) => (
-                <div className={styles.tokenRow} key={token.id}>
+                <div
+                  className={styles.tokenRow}
+                  key={token.id}
+                  onClick={() => onTokenClick(token)}
+                >
                   <Image
                     alt={token.name}
                     height={24}

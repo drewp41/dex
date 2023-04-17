@@ -17,13 +17,7 @@ export async function GET() {
       'x-cg-pro-api-key': process.env.COINGECKO_API_KEY || '',
     },
   });
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
-  // Recommendation: handle errors
   if (!res.ok) {
-    // return BACKUP_TOKEN_LIST;
-    // This will activate the closest `error.js` Error Boundary
     throw new Error('Failed to fetch data');
   }
 
