@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
-import { fetchBalance } from '@wagmi/core';
 import Image from 'next/image';
 import walletIcon from 'public/images/wallet.svg';
+import { useAccount } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
-import useMultiToken from '@/hooks/useMultiToken';
+import { useBalance } from '@/requests/hooks/useBalance';
 import { ETHER_TOKEN } from '@/utils/const';
 
 import styles from '../index.module.scss';
@@ -17,9 +17,12 @@ export default function TokenInput() {
   const [isTokenListModalOpen, setIsTokenListModalOpen] =
     useState<boolean>(false);
   const [token, setToken] = useState<any>(ETHER_TOKEN);
-  const { data } = useMultiToken({
-    addresses: ['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'],
-  });
+  const { address } = useAccount();
+  const { balance } = useBalance(address);
+
+  useEffect(() => {
+    console.log('balance', balance);
+  }, [balance]);
 
   const onValChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
@@ -38,30 +41,6 @@ export default function TokenInput() {
   const closeTokenListModal = () => {
     setIsTokenListModalOpen(false);
   };
-
-  useEffect(() => {
-    console.log('DATA', data);
-    const f = async () => {
-      const balance = await fetchBalance({
-        address: '0x49AEB88Dd4188e7A0891b14281229cd5B385C5eF',
-        token: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      });
-      console.log('BALANCE', balance);
-      return balance;
-    };
-    f();
-  }, [data]);
-
-  // const { data, isError, isLoading } = useToken({
-  //   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  // });
-
-  // const { data, isError, isLoading } = useContractRead({
-  //   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  //   abi: erc20ABI,
-  //   functionName: 'decimals',
-  //   onError: (err) => console.log(err),
-  // });
 
   return (
     <>

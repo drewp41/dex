@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
+
+import { useMarkets } from '@/requests/hooks/useMarkets';
 
 import styles from './index.module.scss';
 
@@ -18,29 +20,13 @@ export default function TokenListModal({
   trigger,
   setToken,
 }: TokenListModalProps) {
-  const [originalData, setOriginalData] = useState<any[]>([]);
-  const [data, setData] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const { markets, onMarketsSearch } = useMarkets();
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    const filteredData = originalData.filter((token: any) => {
-      return (
-        token.name.toLowerCase().includes(e.target.value.toLowerCase()) ||
-        token.symbol.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-    });
-    setData(filteredData);
+    onMarketsSearch(e.target.value);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const d = await (await fetch('/api/markets/')).json();
-      setData(d);
-      setOriginalData(d);
-    };
-    fetchData();
-  }, []);
 
   const onTokenClick = (token: any) => {
     setToken(token);
@@ -63,7 +49,7 @@ export default function TokenListModal({
           <div className={styles.tokenListContainer}>
             <div className={styles.topBlur} />
             <div className={styles.tokenList}>
-              {data.map((token: any) => (
+              {markets.map((token: any) => (
                 <div
                   className={styles.tokenRow}
                   key={token.id}

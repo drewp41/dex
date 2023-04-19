@@ -34,7 +34,7 @@ const TOKEN_METADATA_REQ_OPTIONS = {
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const address = searchParams.get('id') || '';
+  const address = searchParams.get('address') || '';
   try {
     const balances: TokenBalancesResponse = await alchemy.core.getTokenBalances(
       address
