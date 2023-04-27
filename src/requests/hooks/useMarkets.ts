@@ -1,10 +1,12 @@
 import useSWRImmutable from 'swr';
 
 import { APIs } from '../apiPaths';
+import { MarketToken } from '../types';
 
 const fetchMarkets = async (url: string) => {
+  console.log('FETCHING MARKETS');
   const data = await fetch(url);
-  const markets = await data.json();
+  const markets: MarketToken[] = await data.json();
   const originalMarkets = [...markets];
   return { markets, originalMarkets };
 };
@@ -20,13 +22,14 @@ export function useMarkets() {
   }
 
   const onMarketsSearch = (query: string) => {
+    if (!data?.markets) return;
     query = query.toLowerCase();
     const filteredMarkets = data?.originalMarkets.filter(
-      (token: any) =>
+      (token) =>
         token.name.toLowerCase().includes(query) ||
         token.symbol.toLowerCase().includes(query)
     );
-    data!.markets = filteredMarkets;
+    data.markets = filteredMarkets;
   };
 
   const { markets } = data;

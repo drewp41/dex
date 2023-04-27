@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
+import { useAccount } from 'wagmi';
 
+import { useBalance } from '@/requests/hooks/useBalance';
 import { useMarkets } from '@/requests/hooks/useMarkets';
 
 import styles from './index.module.scss';
@@ -22,6 +24,8 @@ export default function TokenListModal({
 }: TokenListModalProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { markets, onMarketsSearch } = useMarkets();
+  const { address } = useAccount();
+  const { balance } = useBalance(address);
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -49,19 +53,40 @@ export default function TokenListModal({
           <div className={styles.tokenListContainer}>
             <div className={styles.topBlur} />
             <div className={styles.tokenList}>
-              {markets.map((token: any) => (
+              {(balance || []).map((token) => (
+                <div
+                  className={styles.tokenRow}
+                  key={token.address}
+                  onClick={() => onTokenClick(token)}
+                >
+                  <div className={styles.tokenInfo}>
+                    <Image
+                      alt={token.name}
+                      height={24}
+                      src={token.logoURI}
+                      width={24}
+                    />
+                    {token.name}
+                  </div>
+                  <div>{token.balance.toFixed(2)}</div>
+                </div>
+              ))}
+              <div className={styles.dividingLine} />
+              {markets.map((token) => (
                 <div
                   className={styles.tokenRow}
                   key={token.id}
                   onClick={() => onTokenClick(token)}
                 >
-                  <Image
-                    alt={token.name}
-                    height={24}
-                    src={token.image}
-                    width={24}
-                  />
-                  {token.name}
+                  <div className={styles.tokenInfo}>
+                    <Image
+                      alt={token.name}
+                      height={24}
+                      src={token.image}
+                      width={24}
+                    />
+                    {token.name}
+                  </div>
                 </div>
               ))}
             </div>
