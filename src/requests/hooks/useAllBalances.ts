@@ -11,7 +11,7 @@ const fetchBalance = async (url: string) => {
   return balance;
 };
 
-export function useBalance(address: `0x${string}` | undefined) {
+export function useAllBalances(address: `0x${string}` | undefined) {
   let {
     data: balance,
     isLoading,

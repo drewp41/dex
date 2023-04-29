@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { useAccount } from 'wagmi';
 
-import { useBalance } from '@/requests/hooks/useBalance';
+import { useAllBalances } from '@/requests/hooks/useAllBalances';
 import { useMarkets } from '@/requests/hooks/useMarkets';
+import { ListToken } from '@/requests/types';
 
 import styles from './index.module.scss';
 
@@ -13,7 +14,7 @@ interface TokenListModalProps {
   isOpen: boolean;
   closeModal: () => void;
   trigger: React.ReactNode;
-  setToken: React.Dispatch<React.SetStateAction<string>>;
+  setToken: (arg0: ListToken) => void;
 }
 
 export default function TokenListModal({
@@ -25,7 +26,7 @@ export default function TokenListModal({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { markets, onMarketsSearch } = useMarkets();
   const { address } = useAccount();
-  const { balance } = useBalance(address);
+  const { balance } = useAllBalances(address);
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -53,10 +54,33 @@ export default function TokenListModal({
           <div className={styles.tokenListContainer}>
             <div className={styles.topBlur} />
             <div className={styles.tokenList}>
-              {(balance || []).map((token) => (
+              {!searchQuery && (
+                <>
+                  {(balance || []).map((token) => (
+                    <div
+                      className={styles.tokenRow}
+                      key={token.address}
+                      onClick={() => onTokenClick(token)}
+                    >
+                      <div className={styles.tokenInfo}>
+                        <Image
+                          alt={token.name}
+                          height={24}
+                          src={token.logoURI}
+                          width={24}
+                        />
+                        {token.name}
+                      </div>
+                      <div>{token.balance.toFixed(2)}</div>
+                    </div>
+                  ))}
+                  <div className={styles.dividingLine} />
+                </>
+              )}
+              {markets.map((token) => (
                 <div
                   className={styles.tokenRow}
-                  key={token.address}
+                  key={token.symbol}
                   onClick={() => onTokenClick(token)}
                 >
                   <div className={styles.tokenInfo}>
@@ -64,25 +88,6 @@ export default function TokenListModal({
                       alt={token.name}
                       height={24}
                       src={token.logoURI}
-                      width={24}
-                    />
-                    {token.name}
-                  </div>
-                  <div>{token.balance.toFixed(2)}</div>
-                </div>
-              ))}
-              <div className={styles.dividingLine} />
-              {markets.map((token) => (
-                <div
-                  className={styles.tokenRow}
-                  key={token.id}
-                  onClick={() => onTokenClick(token)}
-                >
-                  <div className={styles.tokenInfo}>
-                    <Image
-                      alt={token.name}
-                      height={24}
-                      src={token.image}
                       width={24}
                     />
                     {token.name}

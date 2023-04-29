@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
+import { ListToken } from './types';
 
-export async function GET() {
+export async function getTokenList(): Promise<ListToken[]> {
   const url = 'https://tokens.coingecko.com/uniswap/all.json';
 
   const res = await fetch(url, {
@@ -13,6 +13,5 @@ export async function GET() {
   }
 
   const data = await res.json();
-
-  return NextResponse.json(data.tokens);
+  return data;
 }

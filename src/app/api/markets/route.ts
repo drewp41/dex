@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+import { MarketToken, UncleanedMarketToken } from '@/requests/types';
+
 export async function GET() {
   const params = new URLSearchParams({
     vs_currency: 'usd',
@@ -21,7 +23,13 @@ export async function GET() {
     throw new Error('Failed to fetch data');
   }
 
-  const data = await res.json();
+  const uncleanedTokenList: UncleanedMarketToken[] = await res.json();
 
-  return NextResponse.json(data);
+  const tokenList: MarketToken[] = uncleanedTokenList.map((token) => ({
+    logoURI: token.image,
+    name: token.name,
+    symbol: token.symbol,
+  }));
+
+  return NextResponse.json(tokenList);
 }

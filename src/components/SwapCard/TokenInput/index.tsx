@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import walletIcon from 'public/images/wallet.svg';
 import { useAccount } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
-import { useBalance } from '@/requests/hooks/useBalance';
+import { useAllBalances } from '@/requests/hooks/useAllBalances';
+import { ListToken } from '@/requests/types';
 import { ETHER_TOKEN } from '@/utils/const';
 
 import styles from '../index.module.scss';
@@ -16,13 +17,9 @@ export default function TokenInput() {
   const [val, setVal] = useState<string>('');
   const [isTokenListModalOpen, setIsTokenListModalOpen] =
     useState<boolean>(false);
-  const [token, setToken] = useState<any>(ETHER_TOKEN);
+  const [token, setToken] = useState<ListToken>(ETHER_TOKEN);
   const { address } = useAccount();
-  const { balance } = useBalance(address);
-
-  useEffect(() => {
-    console.log('balance', balance);
-  }, [balance]);
+  const { balance } = useAllBalances(address);
 
   const onValChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setVal(e.target.value);
@@ -63,7 +60,7 @@ export default function TokenInput() {
                 <Image
                   alt={token.name}
                   height={24}
-                  src={token.image}
+                  src={token.logoURI}
                   width={24}
                 />
                 {token.symbol.toUpperCase()}

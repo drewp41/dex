@@ -7,10 +7,11 @@ import {
 import { ethers } from 'ethers';
 import { NextResponse } from 'next/server';
 
+import { getTokenList } from '@/requests/requests';
 import {
   type BalanceToken,
   type ListToken,
-  type TokenMap,
+  type TokenAddressMap,
 } from '@/requests/types';
 import { isZeroInHex } from '@/utils/func';
 
@@ -35,11 +36,9 @@ export async function GET(request: Request) {
       })
       .slice(0, 10);
 
-    const tokenList: ListToken[] = await (
-      await fetch('http://localhost:3000/api/token-list')
-    ).json();
+    const tokenList = await getTokenList();
 
-    const tokenMap: TokenMap = Object.fromEntries(
+    const tokenMap: TokenAddressMap = Object.fromEntries(
       tokenList.map((token) => [token.address, token])
     );
 

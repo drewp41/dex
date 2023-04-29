@@ -1,4 +1,4 @@
-export interface MarketToken {
+export interface UncleanedMarketToken {
   id: string;
   symbol: string;
   name: string;
@@ -27,6 +27,12 @@ export interface MarketToken {
   last_updated: Date;
 }
 
+export interface MarketToken {
+  logoURI: string;
+  name: string;
+  symbol: string;
+}
+
 export interface ListToken {
   address: `0x${string}`;
   chainId: number;
@@ -36,20 +42,14 @@ export interface ListToken {
   symbol: string;
 }
 
-export interface TokenMap {
+export interface TokenAddressMap {
   [key: `0x${string}`]: ListToken;
+}
+
+export interface TokenSymbolMap {
+  [key: string]: ListToken;
 }
 
 export interface BalanceToken extends ListToken {
   balance: number;
 }
-
-// export interface BalanceToken {
-//   contractAddress: `0x${string}`;
-//   decimalBalance: number;
-//   decimals: number;
-//   hexBalance: number;
-//   logo: string;
-//   name;
-//   symbol;
-// }
