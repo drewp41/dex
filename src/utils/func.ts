@@ -13,3 +13,10 @@ export function fetchChainFromLocalStorage() {
 export function isZeroInHex(hexString: string) {
   return parseInt(hexString, 16) === 0;
 }
+
+export function formatNum(num: number, digits = 2) {
+  return num.toLocaleString(undefined, {
+    minimumFractionDigits: num >= 1000 ? 0 : digits,
+    maximumFractionDigits: num >= 1000 ? 0 : digits,
+  });
+}

@@ -7,7 +7,7 @@ import { useAccount, useBalance } from 'wagmi';
 import { useAllBalances } from '@/requests/hooks/useAllBalances';
 import { useMarkets } from '@/requests/hooks/useMarkets';
 import { IToken } from '@/requests/types';
-import { ETHER_TOKEN } from '@/utils/const';
+import { formatNum } from '@/utils/func';
 
 import styles from './index.module.scss';
 
@@ -58,40 +58,40 @@ export default function TokenListModal({
             <div className={styles.tokenList}>
               {!searchQuery && (
                 <>
-                  <div
-                    className={styles.tokenRow}
-                    key={'0x0'}
-                    onClick={() => onTokenClick(ETHER_TOKEN)}
-                  >
-                    <div className={styles.tokenInfo}>
-                      <Image
-                        alt={ETHER_TOKEN.name}
-                        height={24}
-                        src={ETHER_TOKEN.logoURI}
-                        width={24}
-                      />
-                      {ETHER_TOKEN.name}
-                    </div>
-                    <div>
-                      {parseFloat(ethBalance?.formatted || '0').toFixed(4)}
-                    </div>
-                  </div>
                   {(balance || []).map((token) => (
                     <div
-                      className={styles.tokenRow}
+                      className={styles.tokenBalanceRow}
                       key={token.address}
                       onClick={() => onTokenClick(token)}
                     >
-                      <div className={styles.tokenInfo}>
-                        <Image
-                          alt={token.name}
-                          height={24}
-                          src={token.logoURI}
-                          width={24}
-                        />
-                        {token.name}
+                      <Image
+                        alt={token.name}
+                        className={styles.tokenImg}
+                        height={30}
+                        src={token.logoURI}
+                        width={30}
+                      />
+                      <div className={styles.tokenNameInfo}>
+                        <div className={styles.tokenName}>{token.name}</div>
+                        <div className={styles.tokenSymbol}>{token.symbol}</div>
                       </div>
-                      <div>{token.balance.toFixed(2)}</div>
+                      <div className={styles.tokenBalanceInfo}>
+                        <div className={styles.tokenBalance}>
+                          {token.symbol === 'ETH'
+                            ? formatNum(Number(ethBalance?.formatted), 4)
+                            : token.balance.toFixed(2)}
+                        </div>
+                        <div className={styles.tokenPrice}>
+                          {`$${
+                            token.symbol === 'ETH'
+                              ? formatNum(
+                                  token.price.usd *
+                                    Number(ethBalance?.formatted)
+                                )
+                              : formatNum(token.price.usd * token.balance)
+                          }`}
+                        </div>
+                      </div>
                     </div>
                   ))}
                   <div className={styles.dividingLine} />
@@ -103,7 +103,7 @@ export default function TokenListModal({
                   key={token.symbol}
                   onClick={() => onTokenClick(token)}
                 >
-                  <div className={styles.tokenInfo}>
+                  <div className={styles.tokenNameLogo}>
                     <Image
                       alt={token.name}
                       height={24}

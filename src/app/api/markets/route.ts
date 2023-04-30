@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 
 import { getTokenList } from '@/requests/requests';
 import { IMarketToken, IToken, IUncleanedMarketToken } from '@/requests/types';
-import { ETHER_TOKEN } from '@/utils/const';
 
 interface TokenSymbolMap {
   [key: string]: IToken;
@@ -64,8 +63,6 @@ export async function GET() {
       },
     ];
   });
-
-  topERC20.unshift(ETHER_TOKEN);
 
   return NextResponse.json(topERC20);
 }

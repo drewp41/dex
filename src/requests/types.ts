@@ -44,4 +44,13 @@ export interface IToken {
 
 export interface IBalanceToken extends IToken {
   balance: number;
+  price: {
+    usd: number;
+    eth: number;
+  };
+  chains: {
+    ethereum: string;
+    arbitrum?: string;
+    optimism?: string;
+  };
 }
