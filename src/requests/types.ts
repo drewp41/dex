@@ -54,3 +54,25 @@ export interface IBalanceToken extends IToken {
     optimism?: string;
   };
 }
+
+export interface ITokenInfo {
+  id: string;
+  symbol: string;
+  name: string;
+  platforms: {
+    ethereum: string;
+    'arbitrum-one'?: string;
+    'optimistic-ethereum'?: string;
+  };
+  market_data: {
+    current_price: {
+      usd: number;
+      eth: number;
+    };
+  };
+  image: {
+    thumb: string;
+    small: string;
+    large: string;
+  };
+}

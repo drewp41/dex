@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { NextResponse } from 'next/server';
 
 import { getTokenList } from '@/requests/requests';
-import { type IBalanceToken, IToken } from '@/requests/types';
+import { type IBalanceToken, IToken, ITokenInfo } from '@/requests/types';
 import { ETHER_TOKEN } from '@/utils/const';
 import { isZeroInHex } from '@/utils/func';
 
@@ -36,28 +36,6 @@ async function getEtherPrice(): Promise<number> {
 
   const data = await res.json();
   return data.ethereum.usd;
-}
-
-interface ITokenInfo {
-  id: string;
-  symbol: string;
-  name: string;
-  platforms: {
-    ethereum: string;
-    'arbitrum-one'?: string;
-    'optimistic-ethereum'?: string;
-  };
-  market_data: {
-    current_price: {
-      usd: number;
-      eth: number;
-    };
-  };
-  image: {
-    thumb: string;
-    small: string;
-    large: string;
-  };
 }
 
 // Gives the high quality token image, the current price (in USD and ETH),

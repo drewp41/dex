@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { IToken } from '@/requests/types';
+import { IToken, ITokenInfo } from '@/requests/types';
 
 interface ISearchToken {
   id: string;
@@ -16,14 +16,60 @@ interface ISearchResults {
   coins: ISearchToken[];
 }
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const query = searchParams.get('query') || '';
-  const params = new URLSearchParams({
-    query,
-  });
-  const url = `https://pro-api.coingecko.com/api/v3/search?${params.toString()}`;
+enum ChainEnum {
+  ethereum = 'ethereum',
+  'arbitrum-one' = 'arbitrum-one',
+  'optimistic-ethereum' = 'optimistic-ethereum',
+}
 
+async function fetchInfoFromAddress(
+  chain: ChainEnum,
+  query: `0x${string}`
+): Promise<ITokenInfo | null> {
+  const url = `https://pro-api.coingecko.com/api/v3/coins/${chain}/contract/${query}`;
+  const res = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-cg-pro-api-key': process.env.COINGECKO_API_KEY || '',
+    },
+  });
+  if (!res.ok) {
+    return null;
+    throw new Error('Failed to fetch data');
+  }
+  const data = await res.json();
+  return data;
+}
+
+async function searchContract(query: `0x${string}`) {
+  const [ethereum, arbitrum, optimism] = await Promise.all([
+    fetchInfoFromAddress(ChainEnum.ethereum, query),
+    fetchInfoFromAddress(ChainEnum['arbitrum-one'], query),
+    fetchInfoFromAddress(ChainEnum['optimistic-ethereum'], query),
+  ]);
+  // At most, only one of these calls will work (unless by chance the contract address is the same across chains)
+  const nonNullToken = [ethereum, arbitrum, optimism].find(
+    (value) => value !== null
+  );
+  if (nonNullToken !== undefined && nonNullToken !== null) {
+    // Convert the data from ITokenInfo to IToken
+    const res: IToken = {
+      address: query,
+      chainId: 1,
+      decimals: 18,
+      logoURI: nonNullToken.image.large,
+      name: nonNullToken.name,
+      symbol: nonNullToken.symbol,
+    };
+    return NextResponse.json([res]);
+  } else {
+    return NextResponse.json([]);
+  }
+}
+
+async function searchQuery(query: string) {
+  const params = new URLSearchParams({ query });
+  const url = `https://pro-api.coingecko.com/api/v3/search?${params.toString()}`;
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +80,6 @@ export async function GET(request: Request) {
     throw new Error('Failed to fetch data');
   }
   const searchResults: ISearchResults = await res.json();
-
   const cleanedResults: IToken[] = searchResults.coins.map((token) => ({
     address: '0x1',
     chainId: 1,
@@ -43,6 +88,16 @@ export async function GET(request: Request) {
     name: token.name,
     symbol: token.symbol,
   }));
-
   return NextResponse.json(cleanedResults);
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const query = searchParams.get('query') || '';
+  // Search by the address
+  if (query.startsWith('0x')) {
+    return searchContract(query as `0x${string}`);
+  } else {
+    return searchQuery(query);
+  }
 }
