@@ -1,5 +1,7 @@
 import useSWR from 'swr';
 
+import { ETHER_TOKEN } from '@/utils/const';
+
 import { APIs } from '../apiPaths';
 import { IBalanceToken } from '../types';
 
@@ -16,6 +18,10 @@ export function useAllBalances(address: `0x${string}` | undefined) {
     isLoading,
     error,
   } = useSWR(() => APIs.balance + '/?address=' + address, fetchBalance);
+
+  if (balance === undefined) {
+    balance = [ETHER_TOKEN];
+  }
 
   return {
     balance,

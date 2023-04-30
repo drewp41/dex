@@ -2,14 +2,14 @@ import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount, useBalance as useEthBalance } from 'wagmi';
 
 import { useAllBalances } from '@/requests/hooks/useAllBalances';
 import { useMarkets } from '@/requests/hooks/useMarkets';
 import { useTokenList } from '@/requests/hooks/useTokenList';
 import { searchToken } from '@/requests/requests';
 import { IToken } from '@/requests/types';
-import { formatNum } from '@/utils/func';
+import { compressAddress, formatNum } from '@/utils/func';
 
 import styles from './index.module.scss';
 
@@ -30,7 +30,7 @@ export default function TokenListModal({
   const { markets } = useMarkets();
   const { address } = useAccount();
   const { balance } = useAllBalances(address);
-  const { data: ethBalance } = useBalance({ address });
+  const { data: ethBalance } = useEthBalance({ address });
   const [searchResults, setSearchResults] = useState<IToken[]>([]);
   const { tokenNameMap } = useTokenList();
 
@@ -63,7 +63,7 @@ export default function TokenListModal({
           <div className={styles.tokenListContainer}>
             <div className={styles.topBlur} />
             <div className={styles.tokenList}>
-              {!searchQuery && (
+              {!searchQuery ? (
                 <>
                   {(balance || []).map((token) => (
                     <div
@@ -102,25 +102,66 @@ export default function TokenListModal({
                     </div>
                   ))}
                   <div className={styles.dividingLine} />
+                  {markets.map((token) => (
+                    <div
+                      className={styles.tokenRow}
+                      key={token.name}
+                      onClick={() => onTokenClick(token)}
+                    >
+                      <div className={styles.tokenNameLogo}>
+                        <Image
+                          alt={token.name}
+                          height={24}
+                          src={token.logoURI}
+                          width={24}
+                        />
+                        {token.name}
+                      </div>
+                    </div>
+                  ))}
                 </>
-              )}
-              {(searchQuery ? searchResults : markets).map((token) => (
-                <div
-                  className={styles.tokenRow}
-                  key={token.name}
-                  onClick={() => onTokenClick(token)}
-                >
-                  <div className={styles.tokenNameLogo}>
+              ) : searchQuery.startsWith('0x') ? (
+                // Show detailed token view with compresses address
+                searchResults.map((token) => (
+                  <div
+                    className={styles.tokenBalanceRow}
+                    key={token.address}
+                    onClick={() => onTokenClick(token)}
+                  >
                     <Image
                       alt={token.name}
-                      height={24}
+                      className={styles.tokenImg}
+                      height={30}
                       src={token.logoURI}
-                      width={24}
+                      width={30}
                     />
-                    {token.name}
+                    <div className={styles.tokenNameInfo}>
+                      <div className={styles.tokenName}>{token.name}</div>
+                      <div className={styles.tokenSymbol}>
+                        {compressAddress(token.address)}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                searchResults.map((token) => (
+                  <div
+                    className={styles.tokenRow}
+                    key={token.name}
+                    onClick={() => onTokenClick(token)}
+                  >
+                    <div className={styles.tokenNameLogo}>
+                      <Image
+                        alt={token.name}
+                        height={24}
+                        src={token.logoURI}
+                        width={24}
+                      />
+                      {token.name}
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
           <Dialog.Close asChild>

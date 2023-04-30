@@ -4,26 +4,29 @@ import { useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import walletIcon from 'public/images/wallet.svg';
-import { useAccount } from 'wagmi';
+import { useAccount, useBalance as useEthBalance } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
-import { useAllBalances } from '@/requests/hooks/useAllBalances';
-import { useTokenList } from '@/requests/hooks/useTokenList';
-import { IToken } from '@/requests/types';
+import { IBalanceToken, IToken } from '@/requests/types';
 import { ETHER_TOKEN } from '@/utils/const';
+import { formatNum, formatPrice } from '@/utils/func';
 
 import styles from '../index.module.scss';
 
+function isBalanceToken(token: IToken | IBalanceToken): token is IBalanceToken {
+  return 'balance' in token;
+}
+
 export default function TokenInput() {
-  const [val, setVal] = useState<string>('');
+  const [amount, setAmount] = useState<string>('');
   const [isTokenListModalOpen, setIsTokenListModalOpen] =
     useState<boolean>(false);
-  const [token, setToken] = useState<IToken>(ETHER_TOKEN);
+  const [token, setToken] = useState<IToken | IBalanceToken>(ETHER_TOKEN);
   const { address } = useAccount();
-  const { balance } = useAllBalances(address);
+  const { data: ethBalance } = useEthBalance({ address });
 
-  const onValChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVal(e.target.value);
+  const onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAmount(e.target.value);
   };
 
   const blockCertainChars = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -40,6 +43,25 @@ export default function TokenInput() {
     setIsTokenListModalOpen(false);
   };
 
+  const tokenBalance = () => {
+    if (token.symbol === 'ETH') {
+      return formatNum(Number(ethBalance?.formatted), 4);
+    } else if (isBalanceToken(token)) {
+      return formatNum(token.balance, 4);
+    }
+    return 0.0;
+  };
+
+  const tokenPrice = () => {
+    if (!amount) {
+      return null;
+    }
+    if (isBalanceToken(token)) {
+      return formatPrice(Number(amount) * token.price.usd);
+    }
+    return '$0.00';
+  };
+
   return (
     <>
       <div className={styles.inputGroup}>
@@ -48,8 +70,8 @@ export default function TokenInput() {
             className={styles.input}
             placeholder='0'
             type='number'
-            value={val}
-            onChange={onValChange}
+            value={amount}
+            onChange={onAmountChange}
             onKeyDown={blockCertainChars}
           />
           <TokenListModal
@@ -71,10 +93,10 @@ export default function TokenInput() {
           />
         </div>
         <div className={styles.inputRowBottom}>
-          <div className={styles.dollar}>$0.00</div>
+          <div className={styles.dollar}>{tokenPrice()}</div>
           <div className={styles.balance}>
             <Image alt='wallet icon' height={20} src={walletIcon} width={20} />
-            0.00
+            {tokenBalance()}
           </div>
         </div>
       </div>
