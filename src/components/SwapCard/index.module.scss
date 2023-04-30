@@ -37,8 +37,9 @@
 
   .token-btn {
     display: flex;
+    flex-basis: content;
     align-items: center;
-    width: auto;
+    width: 100%;
     height: 40px;
     padding: 0 8px;
     border: none;
@@ -50,6 +51,21 @@
 
     .chevron {
       width: 38px;
+    }
+
+    .chevron-small {
+      width: 80px;
+      margin-right: -5px;
+    }
+
+    .select-token-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .select-token {
+      padding-left: 4px;
+      white-space: nowrap;
     }
   }
 }

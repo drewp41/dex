@@ -1,9 +1,16 @@
 .overlay {
   position: fixed;
-  animation: overlay-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
   background: #00000040;
   backdrop-filter: blur(1px);
   inset: 0;
+  
+  &[data-state="open"] {
+    animation: overlay-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &[data-state="closed"] {
+    animation: overlay-hide 150ms cubic-bezier(0.16, 1, 0.3, 1);;
+  }
 }
 
 .content {
@@ -17,12 +24,19 @@
   height: 60vh;
   padding: 25px 25px 0;
   transform: translate(-50%, -50%);
-  animation: content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid #444;
   border-radius: 6px;
   background: var(--dark-grey);
   box-shadow: hsl(206deg 22% 7% / 35%) 0 10px 38px -10px, hsl(206deg 22% 7% / 20%) 0 10px 20px -15px;
   color: var(--text-color);
+
+  &[data-state="open"] {
+    animation: content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &[data-state="closed"] {
+    animation: content-hide 150ms cubic-bezier(0.16, 1, 0.3, 1);;
+  }
 
   &:focus {
     outline: none;
@@ -152,6 +166,7 @@
     justify-content: center;
     width: 25px;
     height: 25px;
+    transition: background-color 0.1s, box-shadow 0.1s;
     border-radius: 100%;
     font-family: inherit;
 
@@ -182,6 +197,16 @@
   }
 }
 
+@keyframes overlay-hide {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes content-show {
   from {
     transform: translate(-50%, -48%) scale(0.96);
@@ -191,5 +216,17 @@
   to {
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
+  }
+}
+
+@keyframes content-hide {
+  from {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: translate(-50%, -48%) scale(0.96);
+    opacity: 0;
   }
 }

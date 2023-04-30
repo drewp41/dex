@@ -4,8 +4,8 @@ import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { useAccount, useBalance as useEthBalance } from 'wagmi';
 
-import { useAllBalances } from '@/requests/hooks/useAllBalances';
 import { useMarkets } from '@/requests/hooks/useMarkets';
+import { usePortfolio } from '@/requests/hooks/usePortfolio';
 import { useTokenList } from '@/requests/hooks/useTokenList';
 import { searchToken } from '@/requests/requests';
 import { IToken } from '@/requests/types';
@@ -29,7 +29,7 @@ export default function TokenListModal({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { markets } = useMarkets();
   const { address } = useAccount();
-  const { balance } = useAllBalances(address);
+  const { balance } = usePortfolio(address);
   const { data: ethBalance } = useEthBalance({ address });
   const [searchResults, setSearchResults] = useState<IToken[]>([]);
   const { tokenNameMap } = useTokenList();
