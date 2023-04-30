@@ -24,7 +24,6 @@ async function getEtherPrice(): Promise<number> {
     vs_currencies: 'usd',
   });
   const url = `https://pro-api.coingecko.com/api/v3/simple/price?${params.toString()}`;
-  console.log(url);
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',

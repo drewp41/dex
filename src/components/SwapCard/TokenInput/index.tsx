@@ -8,6 +8,7 @@ import { useAccount } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
 import { useAllBalances } from '@/requests/hooks/useAllBalances';
+import { useTokenList } from '@/requests/hooks/useTokenList';
 import { IToken } from '@/requests/types';
 import { ETHER_TOKEN } from '@/utils/const';
 

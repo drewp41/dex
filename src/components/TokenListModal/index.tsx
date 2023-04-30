@@ -6,6 +6,8 @@ import { useAccount, useBalance } from 'wagmi';
 
 import { useAllBalances } from '@/requests/hooks/useAllBalances';
 import { useMarkets } from '@/requests/hooks/useMarkets';
+import { useTokenList } from '@/requests/hooks/useTokenList';
+import { searchToken } from '@/requests/requests';
 import { IToken } from '@/requests/types';
 import { formatNum } from '@/utils/func';
 
@@ -25,14 +27,19 @@ export default function TokenListModal({
   setToken,
 }: TokenListModalProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const { markets, onMarketsSearch } = useMarkets();
+  const { markets } = useMarkets();
   const { address } = useAccount();
   const { balance } = useAllBalances(address);
   const { data: ethBalance } = useBalance({ address });
+  const [searchResults, setSearchResults] = useState<IToken[]>([]);
+  const { tokenNameMap } = useTokenList();
 
-  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
-    onMarketsSearch(e.target.value);
+    let res = await searchToken(e.target.value);
+    res = res.filter((token) => !tokenNameMap[token.address.toLowerCase()]);
+    console.log(res);
+    setSearchResults(res);
   };
 
   const onTokenClick = (token: any) => {
@@ -97,10 +104,10 @@ export default function TokenListModal({
                   <div className={styles.dividingLine} />
                 </>
               )}
-              {markets.map((token) => (
+              {(searchQuery ? searchResults : markets).map((token) => (
                 <div
                   className={styles.tokenRow}
-                  key={token.symbol}
+                  key={token.name}
                   onClick={() => onTokenClick(token)}
                 >
                   <div className={styles.tokenNameLogo}>

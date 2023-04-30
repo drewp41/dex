@@ -3,10 +3,6 @@ import { NextResponse } from 'next/server';
 import { getTokenList } from '@/requests/requests';
 import { IMarketToken, IToken, IUncleanedMarketToken } from '@/requests/types';
 
-interface TokenSymbolMap {
-  [key: string]: IToken;
-}
-
 async function getCoinGeckoTop100() {
   const params = new URLSearchParams({
     vs_currency: 'usd',
@@ -40,11 +36,12 @@ async function getCoinGeckoTop100() {
 }
 
 export async function GET() {
-  const top100 = await getCoinGeckoTop100();
+  const [top100, tokenList] = await Promise.all([
+    getCoinGeckoTop100(),
+    getTokenList(),
+  ]);
 
-  const tokenList = await getTokenList();
-
-  const tokenMap: TokenSymbolMap = Object.fromEntries(
+  const tokenMap = Object.fromEntries(
     tokenList.map((token) => [token.symbol.toLowerCase(), token])
   );
 
