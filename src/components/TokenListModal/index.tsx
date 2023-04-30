@@ -2,11 +2,12 @@ import { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
-import { useAccount } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 
 import { useAllBalances } from '@/requests/hooks/useAllBalances';
 import { useMarkets } from '@/requests/hooks/useMarkets';
-import { ListToken } from '@/requests/types';
+import { IToken } from '@/requests/types';
+import { ETHER_TOKEN } from '@/utils/const';
 
 import styles from './index.module.scss';
 
@@ -14,7 +15,7 @@ interface TokenListModalProps {
   isOpen: boolean;
   closeModal: () => void;
   trigger: React.ReactNode;
-  setToken: (arg0: ListToken) => void;
+  setToken: (arg0: IToken) => void;
 }
 
 export default function TokenListModal({
@@ -27,6 +28,7 @@ export default function TokenListModal({
   const { markets, onMarketsSearch } = useMarkets();
   const { address } = useAccount();
   const { balance } = useAllBalances(address);
+  const { data: ethBalance } = useBalance({ address });
 
   const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -56,6 +58,24 @@ export default function TokenListModal({
             <div className={styles.tokenList}>
               {!searchQuery && (
                 <>
+                  <div
+                    className={styles.tokenRow}
+                    key={'0x0'}
+                    onClick={() => onTokenClick(ETHER_TOKEN)}
+                  >
+                    <div className={styles.tokenInfo}>
+                      <Image
+                        alt={ETHER_TOKEN.name}
+                        height={24}
+                        src={ETHER_TOKEN.logoURI}
+                        width={24}
+                      />
+                      {ETHER_TOKEN.name}
+                    </div>
+                    <div>
+                      {parseFloat(ethBalance?.formatted || '0').toFixed(4)}
+                    </div>
+                  </div>
                   {(balance || []).map((token) => (
                     <div
                       className={styles.tokenRow}

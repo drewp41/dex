@@ -1,6 +1,6 @@
-import { ListToken } from './types';
+import { IToken } from './types';
 
-export async function getTokenList(): Promise<ListToken[]> {
+export async function getTokenList(): Promise<IToken[]> {
   const url = 'https://tokens.coingecko.com/uniswap/all.json';
 
   const res = await fetch(url, {
@@ -13,5 +13,5 @@ export async function getTokenList(): Promise<ListToken[]> {
   }
 
   const data = await res.json();
-  return data;
+  return data.tokens;
 }

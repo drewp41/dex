@@ -3,14 +3,17 @@ import {
   Network,
   TokenBalance,
   TokenBalancesResponse,
-  TokenMetadataResponse,
 } from 'alchemy-sdk';
-import { utils } from 'ethers';
+import { ethers } from 'ethers';
 import { NextResponse } from 'next/server';
 
+import { getTokenList } from '@/requests/requests';
+import { type IBalanceToken, IToken } from '@/requests/types';
 import { isZeroInHex } from '@/utils/func';
 
-const ALCHEMY_URL = `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_MAINNET_KEY}`;
+interface TokenAddressMap {
+  [key: `0x${string}`]: IToken;
+}
 
 const settings = {
   apiKey: process.env.ALCHEMY_MAINNET_KEY,
@@ -18,19 +21,6 @@ const settings = {
 };
 
 const alchemy = new Alchemy(settings);
-
-const TOKEN_METADATA_REQ_BODY = {
-  id: 1,
-  jsonrpc: '2.0',
-  method: 'alchemy_getTokenMetadata',
-};
-
-const TOKEN_METADATA_REQ_OPTIONS = {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -46,40 +36,25 @@ export async function GET(request: Request) {
       })
       .slice(0, 10);
 
-    const requestLst = nonZeroBalances.map((token: TokenBalance) => ({
-      ...TOKEN_METADATA_REQ_BODY,
-      params: [token.contractAddress],
-    }));
+    const tokenList = await getTokenList();
 
-    const fetchPromises = requestLst.map((req) =>
-      fetch(ALCHEMY_URL, {
-        ...TOKEN_METADATA_REQ_OPTIONS,
-        body: JSON.stringify(req),
-      })
-    );
-    const responses = await Promise.all(fetchPromises);
-
-    const jsonResps = await Promise.all(
-      responses.map(async (response) => {
-        const jsonResp = await response.json();
-        return jsonResp.result;
-      })
+    const tokenMap: TokenAddressMap = Object.fromEntries(
+      tokenList.map((token) => [token.address, token])
     );
 
-    const res = jsonResps.map((metadata: TokenMetadataResponse, i) => {
-      const { tokenBalance, contractAddress } = nonZeroBalances[i];
-      const balance = utils.formatUnits(
-        tokenBalance || '0',
-        metadata.decimals || 18
+    const tokenBalances: IBalanceToken[] = nonZeroBalances.flatMap((token) => {
+      const { tokenBalance, contractAddress } = token;
+
+      if (!tokenMap.hasOwnProperty(contractAddress)) {
+        return [];
+      }
+      const listToken = tokenMap[contractAddress as `0x${string}`];
+      const balance = parseFloat(
+        ethers.utils.formatUnits(tokenBalance || '0', listToken.decimals)
       );
-      return {
-        ...metadata,
-        contractAddress,
-        decimalBalance: balance,
-        hexBalance: tokenBalance,
-      };
+      return [{ ...listToken, balance }];
     });
-    return NextResponse.json(res);
+    return NextResponse.json(tokenBalances);
   } catch (error) {
     throw error;
   }

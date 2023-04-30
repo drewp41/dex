@@ -1,13 +1,12 @@
 import useSWR from 'swr';
 
 import { APIs } from '../apiPaths';
-import { BalanceToken } from '../types';
+import { IBalanceToken } from '../types';
 
 const fetchBalance = async (url: string) => {
   console.log('FETCHIN BAL');
   const data = await fetch(url);
-  const balance: BalanceToken[] = await data.json();
-  console.log(balance);
+  const balance: IBalanceToken[] = await data.json();
   return balance;
 };
 

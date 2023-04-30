@@ -8,7 +8,7 @@ import { useAccount } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
 import { useAllBalances } from '@/requests/hooks/useAllBalances';
-import { ListToken } from '@/requests/types';
+import { IToken } from '@/requests/types';
 import { ETHER_TOKEN } from '@/utils/const';
 
 import styles from '../index.module.scss';
@@ -17,7 +17,7 @@ export default function TokenInput() {
   const [val, setVal] = useState<string>('');
   const [isTokenListModalOpen, setIsTokenListModalOpen] =
     useState<boolean>(false);
-  const [token, setToken] = useState<ListToken>(ETHER_TOKEN);
+  const [token, setToken] = useState<IToken>(ETHER_TOKEN);
   const { address } = useAccount();
   const { balance } = useAllBalances(address);
 

@@ -1,6 +1,6 @@
 import { arbitrum, mainnet, optimism, polygon } from 'wagmi/chains';
 
-import { ListToken } from '@/requests/types';
+import { IToken } from '@/requests/types';
 
 export const ONE_INCH_BASE_URL = 'fd';
 
@@ -10,7 +10,7 @@ export const CHAIN_LIST = [mainnet, polygon, optimism, arbitrum];
 
 export const DEFAULT_CHAIN = '1';
 
-export const ETHER_TOKEN: ListToken = {
+export const ETHER_TOKEN: IToken = {
   symbol: 'eth',
   name: 'Ether',
   logoURI:

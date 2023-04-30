@@ -6,6 +6,7 @@ import styles from '../index.module.scss';
 
 export default function SwapBtn() {
   const { isConnected } = useAccount();
+
   return (
     <>
       {isConnected ? (
