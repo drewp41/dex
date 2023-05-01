@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
@@ -8,7 +6,6 @@ import { useAccount, useBalance as useEthBalance } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
 import { IBalanceToken, IToken } from '@/requests/types';
-import { ETHER_TOKEN } from '@/utils/const';
 import { formatNum, formatPrice } from '@/utils/func';
 
 import styles from '../index.module.scss';
@@ -18,17 +15,17 @@ function isBalanceToken(token: IToken | IBalanceToken): token is IBalanceToken {
 }
 
 interface TokenInputProps {
-  defaultToken: string | null;
+  first: boolean;
+  token: IToken | IBalanceToken | null;
+  setToken: (arg0: IToken | IBalanceToken) => void;
+  amount: string;
+  setAmount: (arg0: string) => void;
 }
 
 export default function TokenInput(props: TokenInputProps) {
-  const { defaultToken } = props;
-  const [amount, setAmount] = useState<string>('');
+  const { token, setToken, amount, setAmount } = props;
   const [isTokenListModalOpen, setIsTokenListModalOpen] =
     useState<boolean>(false);
-  const [token, setToken] = useState<IToken | IBalanceToken | null>(
-    defaultToken ? ETHER_TOKEN : null
-  );
   const { address } = useAccount();
   const { data: ethBalance } = useEthBalance({ address });
 
@@ -51,6 +48,9 @@ export default function TokenInput(props: TokenInputProps) {
   };
 
   const tokenBalance = () => {
+    if (token === null) {
+      return '';
+    }
     if (token.symbol === 'ETH') {
       return formatNum(Number(ethBalance?.formatted), 4);
     } else if (isBalanceToken(token)) {
@@ -60,7 +60,7 @@ export default function TokenInput(props: TokenInputProps) {
   };
 
   const tokenPrice = () => {
-    if (!amount) {
+    if (!amount || token == null) {
       return null;
     }
     if (isBalanceToken(token)) {
@@ -70,59 +70,61 @@ export default function TokenInput(props: TokenInputProps) {
   };
 
   return (
-    <>
-      <div className={styles.inputGroup}>
-        <div className={styles.inputRowTop}>
-          <input
-            className={styles.input}
-            placeholder='0'
-            type='number'
-            value={amount}
-            onChange={onAmountChange}
-            onKeyDown={blockCertainChars}
-          />
-          <TokenListModal
-            closeModal={closeTokenListModal}
-            isOpen={isTokenListModalOpen}
-            setToken={setToken}
-            trigger={
-              <button className={styles.tokenBtn} onClick={onTokenBtnClick}>
-                {token !== null ? (
-                  <>
-                    <Image
-                      alt={token.name}
-                      height={24}
-                      src={token.logoURI}
-                      width={24}
-                    />
-                    <div>{token.symbol.toUpperCase()}</div>
-                    <ChevronDownIcon className={styles.chevron} />
-                  </>
-                ) : (
-                  <div className={styles.selectTokenContainer}>
-                    <div className={styles.selectToken}>Select token</div>
-                    <ChevronDownIcon className={styles.chevronSmall} />
+    <div className={styles.inputGroup}>
+      <div className={styles.inputRowTop}>
+        <input
+          className={styles.input}
+          placeholder='0'
+          type='number'
+          value={amount}
+          onChange={onAmountChange}
+          onKeyDown={blockCertainChars}
+        />
+        <TokenListModal
+          closeModal={closeTokenListModal}
+          isOpen={isTokenListModalOpen}
+          setToken={setToken}
+          trigger={
+            <button className={styles.tokenBtn} onClick={onTokenBtnClick}>
+              {token !== null ? (
+                <>
+                  <Image
+                    alt={token.name}
+                    height={24}
+                    src={token.logoURI}
+                    width={24}
+                  />
+                  <div className={styles.tokenSymbol}>
+                    {token.symbol.toUpperCase()}
                   </div>
-                )}
-              </button>
-            }
-          />
-        </div>
-        <div className={styles.inputRowBottom}>
-          <div className={styles.dollar}>{tokenPrice()}</div>
-          {token !== null && (
-            <div className={styles.balance}>
-              <Image
-                alt='wallet icon'
-                height={20}
-                src={walletIcon}
-                width={20}
+                </>
+              ) : (
+                <div className={styles.selectToken}>Select token</div>
+              )}
+              <ChevronDownIcon
+                className={styles.chevron}
+                height={16}
+                width={16}
               />
-              {tokenBalance()}
-            </div>
+            </button>
+          }
+        />
+      </div>
+      <div className={styles.inputRowBottom}>
+        <div className={styles.price}>{tokenPrice()}</div>
+        <div className={styles.balance}>
+          {token !== null && (
+            <Image
+              alt='wallet icon'
+              className={styles.walletIcon}
+              height={20}
+              src={walletIcon}
+              width={20}
+            />
           )}
+          {tokenBalance()}
         </div>
       </div>
-    </>
+    </div>
   );
 }
