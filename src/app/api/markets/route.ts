@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 
 import { getTokenList } from '@/requests/requests';
-import { IMarketToken, IToken, IUncleanedMarketToken } from '@/requests/types';
+import { IToken, IUncleanedMarketToken } from '@/requests/types';
+
+interface IMarketToken {
+  logoURI: string;
+  name: string;
+  symbol: string;
+}
 
 async function getCoinGeckoTop100() {
   const params = new URLSearchParams({

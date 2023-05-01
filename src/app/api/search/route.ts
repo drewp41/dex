@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { IToken, ITokenInfo } from '@/requests/types';
+import { ChainEnum } from '@/utils/const';
 
 interface ISearchToken {
   id: string;
@@ -16,12 +17,6 @@ interface ISearchResults {
   coins: ISearchToken[];
 }
 
-enum ChainEnum {
-  ethereum = 'ethereum',
-  'arbitrum-one' = 'arbitrum-one',
-  'optimistic-ethereum' = 'optimistic-ethereum',
-}
-
 async function fetchInfoFromAddress(
   chain: ChainEnum,
   query: `0x${string}`
@@ -34,8 +29,8 @@ async function fetchInfoFromAddress(
     },
   });
   if (!res.ok) {
+    // Not an error because if the contract doesn't exist on the chain, it will return a 404
     return null;
-    throw new Error('Failed to fetch data');
   }
   const data = await res.json();
   return data;
@@ -60,6 +55,10 @@ async function searchContract(query: `0x${string}`) {
       logoURI: nonNullToken.image.large,
       name: nonNullToken.name,
       symbol: nonNullToken.symbol,
+      price: {
+        usd: nonNullToken.market_data.current_price.usd,
+        eth: nonNullToken.market_data.current_price.eth,
+      },
     };
     return NextResponse.json([res]);
   } else {

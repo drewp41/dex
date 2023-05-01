@@ -1,12 +1,12 @@
 import useSWRImmutable from 'swr';
 
 import { APIs } from '../apiPaths';
-import { IMarketToken } from '../types';
+import { IToken } from '../types';
 
 const fetchMarkets = async (url: string) => {
   console.log('FETCHING MARKETS');
   const data = await fetch(url);
-  const markets: IMarketToken[] = await data.json();
+  const markets: IToken[] = await data.json();
   const originalMarkets = [...markets];
   return { markets, originalMarkets };
 };

@@ -8,7 +8,7 @@ export function useTokenList() {
     data: tokenList,
     isLoading,
     error,
-  } = useSWRImmutable(() => APIs['token-list'], getTokenList);
+  } = useSWRImmutable(() => APIs.tokenList, getTokenList);
 
   const tokenNameMap = Object.fromEntries(
     (tokenList || []).map((token) => [token.name.toLowerCase(), token])

@@ -1,3 +1,5 @@
+import { IBalanceToken, IToken } from '@/requests/types';
+
 import { DEFAULT_CHAIN } from './const';
 
 export function fetchChainFromLocalStorage() {
@@ -28,7 +30,9 @@ export function compressAddress(address: `0x${string}`) {
 export function formatPrice(num: number) {
   let formattedNum;
 
-  if (num >= 1e12) {
+  if (num < 0.01) {
+    return '$0.01 <';
+  } else if (num >= 1e12) {
     return 'woahhh';
   } else if (num >= 1e12) {
     formattedNum = (num / 1e9).toFixed(2) + 'T';
@@ -45,4 +49,10 @@ export function formatPrice(num: number) {
   formattedNum = parts.join('.');
 
   return '$' + formattedNum;
+}
+
+export function isBalanceToken(
+  token: IToken | IBalanceToken
+): token is IBalanceToken {
+  return 'balance' in token;
 }

@@ -1,23 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { ChevronDownIcon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import walletIcon from 'public/images/wallet.svg';
 import { useAccount, useBalance as useEthBalance } from 'wagmi';
 
 import TokenListModal from '@/components/TokenListModal';
+import { searchToken } from '@/requests/requests';
 import { IBalanceToken, IToken } from '@/requests/types';
-import { formatNum, formatPrice } from '@/utils/func';
+import { formatNum, formatPrice, isBalanceToken } from '@/utils/func';
 
 import styles from '../index.module.scss';
-
-function isBalanceToken(token: IToken | IBalanceToken): token is IBalanceToken {
-  return 'balance' in token;
-}
 
 interface TokenInputProps {
   first: boolean;
   token: IToken | IBalanceToken | null;
-  setToken: (arg0: IToken | IBalanceToken) => void;
+  setToken: React.Dispatch<React.SetStateAction<IToken | IBalanceToken | null>>;
   amount: string;
   setAmount: (arg0: string) => void;
 }
@@ -28,6 +26,7 @@ export default function TokenInput(props: TokenInputProps) {
     useState<boolean>(false);
   const { address } = useAccount();
   const { data: ethBalance } = useEthBalance({ address });
+  const [isTokenPriceLoading, setIsTokenPriceLoading] = useState(false);
 
   const onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);
@@ -63,11 +62,33 @@ export default function TokenInput(props: TokenInputProps) {
     if (!amount || token == null) {
       return null;
     }
-    if (isBalanceToken(token)) {
+    if ('price' in token && token.price) {
       return formatPrice(Number(amount) * token.price.usd);
     }
     return '$0.00';
   };
+
+  useEffect(() => {
+    const fetchTokenPrice = async () => {
+      setIsTokenPriceLoading(true);
+      const res = await searchToken(token!.address);
+      if (res.length === 1) {
+        const t = res[0];
+        console.log(token);
+        console.log(t);
+        setToken((prev) => ({
+          ...prev!,
+          price: t.price,
+        }));
+      }
+      setIsTokenPriceLoading(false);
+    };
+    // Balance tokens already have a price
+    if (token !== null && !isBalanceToken(token)) {
+      fetchTokenPrice();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token?.symbol]);
 
   return (
     <div className={styles.inputGroup}>
@@ -111,7 +132,9 @@ export default function TokenInput(props: TokenInputProps) {
         />
       </div>
       <div className={styles.inputRowBottom}>
-        <div className={styles.price}>{tokenPrice()}</div>
+        <div className={styles.price}>
+          {isTokenPriceLoading ? <Skeleton width={50} /> : tokenPrice()}
+        </div>
         <div className={styles.balance}>
           {token !== null && (
             <Image

@@ -4,6 +4,7 @@ import { Providers } from '@/providers';
 import { gilroy } from '@/utils/fonts';
 
 import './globals.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 interface IRootLayout {
   children: React.ReactNode;

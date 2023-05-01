@@ -27,3 +27,9 @@ export const ETHER_TOKEN: IBalanceToken = {
     ethereum: '0x0',
   },
 };
+
+export enum ChainEnum {
+  ethereum = 'ethereum',
+  'arbitrum-one' = 'arbitrum-one',
+  'optimistic-ethereum' = 'optimistic-ethereum',
+}

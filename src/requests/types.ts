@@ -27,12 +27,6 @@ export interface IUncleanedMarketToken {
   last_updated: Date;
 }
 
-export interface IMarketToken {
-  logoURI: string;
-  name: string;
-  symbol: string;
-}
-
 export interface IToken {
   address: `0x${string}`;
   chainId: number;
@@ -40,6 +34,10 @@ export interface IToken {
   logoURI: string;
   name: string;
   symbol: string;
+  price?: {
+    usd: number;
+    eth: number;
+  };
 }
 
 export interface IBalanceToken extends IToken {

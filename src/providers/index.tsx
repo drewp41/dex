@@ -1,5 +1,6 @@
 'use client';
 
+import { SkeletonTheme } from 'react-loading-skeleton';
 import { ConnectKitProvider } from 'connectkit';
 import {
   configureChains,
@@ -58,7 +59,9 @@ export const Providers = ({ children }: IProviders) => {
             'var(--gilroy), "Times New Roman", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto',
         }}
       >
-        {children}
+        <SkeletonTheme baseColor='#606060' highlightColor='#787878'>
+          {children}
+        </SkeletonTheme>
       </ConnectKitProvider>
     </WagmiConfig>
   );
