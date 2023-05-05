@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowsUpDownIcon } from '@heroicons/react/24/solid';
 
 import useTokenState from '@/hooks/useTokenState';
@@ -11,23 +11,28 @@ import TokenInput from './TokenInput';
 import styles from './index.module.scss';
 
 export default function SwapCard() {
-  const { tokenState, setFirstTokenState, setSecondTokenState, switchTokens } =
-    useTokenState();
-  // const [firstToken, setFirstoken] = useState<IToken | IBalanceToken | null>(
-  //   ETHER_TOKEN
-  // );
-  // const [secondToken, setSecondToken] = useState<IToken | IBalanceToken | null>(
-  //   null
-  // );
-  // const [firstAmount, setFirstAmount] = useState<string>('');
-  // const [secondAmount, setSecondAmount] = useState<string>('');
-
+  const {
+    tokenState,
+    setFirstTokenState,
+    setSecondTokenState,
+    switchTokens,
+    firstTokenChanged,
+  } = useTokenState();
   const [rotate, setRotate] = useState(false);
 
   const onSwitchTokensClick = () => {
     setRotate(true);
     switchTokens();
   };
+
+  useEffect(() => {
+    // Then update the second token
+    if (firstTokenChanged % 2 === 0) {
+      console.log('first token changed');
+    } else {
+      console.log('second token changed');
+    }
+  }, [firstTokenChanged]);
 
   return (
     <>

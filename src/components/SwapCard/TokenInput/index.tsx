@@ -60,7 +60,11 @@ export default function TokenInput(props: TokenInputProps) {
   };
 
   const tokenPrice = () => {
-    if (!tokenState.amount || tokenState.token == null) {
+    if (
+      !tokenState.amount ||
+      tokenState.amount == '0' ||
+      tokenState.token == null
+    ) {
       return null;
     }
     if ('price' in tokenState.token && tokenState.token.price) {

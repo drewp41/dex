@@ -9,7 +9,7 @@ import { usePortfolio } from '@/requests/hooks/usePortfolio';
 import { useTokenList } from '@/requests/hooks/useTokenList';
 import { searchToken } from '@/requests/requests';
 import { IBalanceToken, IToken, ITokenState } from '@/requests/types';
-import { compressAddress, formatNum } from '@/utils/func';
+import { compressAddress, formatNum, isBalanceToken } from '@/utils/func';
 
 import styles from './index.module.scss';
 
@@ -33,7 +33,7 @@ export default function TokenListModal({
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { markets } = useMarkets();
   const { address } = useAccount();
-  const { balance } = usePortfolio(address);
+  const { balance, portfolioSet } = usePortfolio(address);
   const { data: ethBalance } = useEthBalance({ address });
   const [searchResults, setSearchResults] = useState<IToken[]>([]);
   const { tokenNameMap } = useTokenList();
@@ -42,7 +42,6 @@ export default function TokenListModal({
     setSearchQuery(e.target.value);
     let res = await searchToken(e.target.value);
     res = res.filter((token) => !tokenNameMap[token.address.toLowerCase()]);
-    console.log(res);
     setSearchResults(res);
   };
 
@@ -56,15 +55,44 @@ export default function TokenListModal({
     closeModal();
   };
 
-  // const rowDisabled = (symbol: string) => {
-  //   if (first && ) {
-
-  //   }
-  // }
-
-  // ${
-  //                       rowDisabled(token.symbol) && styles.disabled
-  //                     }
+  const tokenRow = (token: IToken, showAddress: boolean) => (
+    <div
+      className={styles.tokenRow}
+      key={token.address}
+      onClick={() => onTokenClick(token)}
+    >
+      <Image
+        alt={token.name}
+        className={styles.tokenImg}
+        height={30}
+        src={token.logoURI}
+        width={30}
+      />
+      <div className={styles.tokenNameInfo}>
+        <div className={styles.tokenName}>{token.name}</div>
+        <div className={styles.tokenSymbol}>
+          {showAddress ? compressAddress(token.address) : token.symbol}
+        </div>
+      </div>
+      {/* Show token balance and value */}
+      {isBalanceToken(token) && (
+        <div className={styles.tokenBalanceInfo}>
+          <div className={styles.tokenBalance}>
+            {token.symbol === 'ETH'
+              ? formatNum(Number(ethBalance?.formatted), 4)
+              : token.balance.toFixed(2)}
+          </div>
+          <div className={styles.tokenPrice}>
+            {`$${
+              token.symbol === 'ETH'
+                ? formatNum(token.price.usd * Number(ethBalance?.formatted))
+                : formatNum(token.price.usd * token.balance)
+            }`}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={() => isOpen && closeModal()}>
@@ -84,104 +112,17 @@ export default function TokenListModal({
             <div className={styles.tokenList}>
               {!searchQuery ? (
                 <>
-                  {(balance || []).map((token) => (
-                    <div
-                      className={`${styles.tokenRow} `}
-                      key={token.address}
-                      onClick={() => onTokenClick(token)}
-                    >
-                      <Image
-                        alt={token.name}
-                        className={styles.tokenImg}
-                        height={30}
-                        src={token.logoURI}
-                        width={30}
-                      />
-                      <div className={styles.tokenNameInfo}>
-                        <div className={styles.tokenName}>{token.name}</div>
-                        <div className={styles.tokenSymbol}>{token.symbol}</div>
-                      </div>
-                      <div className={styles.tokenBalanceInfo}>
-                        <div className={styles.tokenBalance}>
-                          {token.symbol === 'ETH'
-                            ? formatNum(Number(ethBalance?.formatted), 4)
-                            : token.balance.toFixed(2)}
-                        </div>
-                        <div className={styles.tokenPrice}>
-                          {`$${
-                            token.symbol === 'ETH'
-                              ? formatNum(
-                                  token.price.usd *
-                                    Number(ethBalance?.formatted)
-                                )
-                              : formatNum(token.price.usd * token.balance)
-                          }`}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                  {(balance || []).map((token) => tokenRow(token, false))}
                   <div className={styles.dividingLine} />
-                  {markets.map((token) => (
-                    <div
-                      className={styles.tokenRow}
-                      key={token.address}
-                      onClick={() => onTokenClick(token)}
-                    >
-                      <Image
-                        alt={token.name}
-                        className={styles.tokenImg}
-                        height={30}
-                        src={token.logoURI}
-                        width={30}
-                      />
-                      <div className={styles.tokenNameInfo}>
-                        <div className={styles.tokenName}>{token.name}</div>
-                        <div className={styles.tokenSymbol}>{token.symbol}</div>
-                      </div>
-                    </div>
-                  ))}
+                  {markets.map(
+                    (token) =>
+                      !portfolioSet.has(token.symbol) && tokenRow(token, false)
+                  )}
                 </>
-              ) : searchQuery.startsWith('0x') ? (
-                // Show detailed token view with compresses address
-                searchResults.map((token) => (
-                  <div
-                    className={styles.tokenBalanceRow}
-                    key={token.address}
-                    onClick={() => onTokenClick(token)}
-                  >
-                    <Image
-                      alt={token.name}
-                      className={styles.tokenImg}
-                      height={30}
-                      src={token.logoURI}
-                      width={30}
-                    />
-                    <div className={styles.tokenNameInfo}>
-                      <div className={styles.tokenName}>{token.name}</div>
-                      <div className={styles.tokenSymbol}>
-                        {compressAddress(token.address)}
-                      </div>
-                    </div>
-                  </div>
-                ))
               ) : (
-                searchResults.map((token) => (
-                  <div
-                    className={styles.tokenRow}
-                    key={token.name}
-                    onClick={() => onTokenClick(token)}
-                  >
-                    <div className={styles.tokenNameLogo}>
-                      <Image
-                        alt={token.name}
-                        height={24}
-                        src={token.logoURI}
-                        width={24}
-                      />
-                      {token.name}
-                    </div>
-                  </div>
-                ))
+                searchResults.map((token) =>
+                  tokenRow(token, searchQuery.startsWith('0x'))
+                )
               )}
             </div>
           </div>
