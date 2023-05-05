@@ -74,3 +74,8 @@ export interface ITokenInfo {
     large: string;
   };
 }
+
+export interface ITokenState {
+  token: IBalanceToken | IToken | null;
+  amount: string;
+}

@@ -92,23 +92,10 @@
 
       .token-row {
         display: flex;
-        justify-content: space-between;
         padding: 6px 8px;
         transition: background-color 0.1s;
         border-radius: 4px;
-
-        &:hover {
-          background-color: var(--light-grey);
-          cursor: pointer;
-        }
-      }
-
-      .token-balance-row {
-        display: flex;
-        padding: 6px 8px;
-        transition: background-color 0.1s;
-        border-radius: 4px;
-        gap: 10px;
+        gap: 12px;
 
         &:hover {
           background-color: var(--light-grey);

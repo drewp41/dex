@@ -8,7 +8,7 @@ import { useMarkets } from '@/requests/hooks/useMarkets';
 import { usePortfolio } from '@/requests/hooks/usePortfolio';
 import { useTokenList } from '@/requests/hooks/useTokenList';
 import { searchToken } from '@/requests/requests';
-import { IToken } from '@/requests/types';
+import { IBalanceToken, IToken, ITokenState } from '@/requests/types';
 import { compressAddress, formatNum } from '@/utils/func';
 
 import styles from './index.module.scss';
@@ -17,14 +17,18 @@ interface TokenListModalProps {
   isOpen: boolean;
   closeModal: () => void;
   trigger: React.ReactNode;
-  setToken: (arg0: IToken) => void;
+  tokenState: ITokenState;
+  setTokenState: (newTokenState: ITokenState) => void;
+  // Whether is it first token input, or not
+  isFirst: boolean;
 }
 
 export default function TokenListModal({
   isOpen,
   closeModal,
   trigger,
-  setToken,
+  tokenState,
+  setTokenState,
 }: TokenListModalProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { markets } = useMarkets();
@@ -42,10 +46,25 @@ export default function TokenListModal({
     setSearchResults(res);
   };
 
-  const onTokenClick = (token: any) => {
-    setToken(token);
+  // Is IToken if it's clicked on in the top 100 or search list,
+  // Is IBalance token if clicked on from portfolio section
+  const onTokenClick = (token: IToken | IBalanceToken) => {
+    setTokenState({
+      ...tokenState,
+      token: token,
+    });
     closeModal();
   };
+
+  // const rowDisabled = (symbol: string) => {
+  //   if (first && ) {
+
+  //   }
+  // }
+
+  // ${
+  //                       rowDisabled(token.symbol) && styles.disabled
+  //                     }
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={() => isOpen && closeModal()}>
@@ -67,7 +86,7 @@ export default function TokenListModal({
                 <>
                   {(balance || []).map((token) => (
                     <div
-                      className={styles.tokenBalanceRow}
+                      className={`${styles.tokenRow} `}
                       key={token.address}
                       onClick={() => onTokenClick(token)}
                     >
@@ -105,17 +124,19 @@ export default function TokenListModal({
                   {markets.map((token) => (
                     <div
                       className={styles.tokenRow}
-                      key={token.name}
+                      key={token.address}
                       onClick={() => onTokenClick(token)}
                     >
-                      <div className={styles.tokenNameLogo}>
-                        <Image
-                          alt={token.name}
-                          height={24}
-                          src={token.logoURI}
-                          width={24}
-                        />
-                        {token.name}
+                      <Image
+                        alt={token.name}
+                        className={styles.tokenImg}
+                        height={30}
+                        src={token.logoURI}
+                        width={30}
+                      />
+                      <div className={styles.tokenNameInfo}>
+                        <div className={styles.tokenName}>{token.name}</div>
+                        <div className={styles.tokenSymbol}>{token.symbol}</div>
                       </div>
                     </div>
                   ))}

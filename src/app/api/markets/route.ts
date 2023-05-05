@@ -48,18 +48,20 @@ export async function GET() {
   ]);
 
   const tokenMap = Object.fromEntries(
-    tokenList.map((token) => [token.symbol.toLowerCase(), token])
+    tokenList.map((token) => [token.symbol.toUpperCase(), token])
   );
 
   // Filter out all non ERC20 tokens from the CoinGecko Top 100
   const topERC20: IToken[] = top100.flatMap((marketToken) => {
-    if (!tokenMap.hasOwnProperty(marketToken.symbol)) {
+    const symbol = marketToken.symbol.toUpperCase();
+    if (!tokenMap.hasOwnProperty(symbol)) {
       return [];
     }
-    const listToken = tokenMap[marketToken.symbol];
+    const listToken = tokenMap[symbol];
     return [
       {
         ...marketToken,
+        symbol,
         address: listToken.address,
         chainId: listToken.chainId,
         decimals: listToken.decimals,
