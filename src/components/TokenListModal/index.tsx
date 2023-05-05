@@ -1,15 +1,22 @@
 import { useState } from 'react';
+import { CheckIcon } from '@heroicons/react/24/solid';
 import * as Dialog from '@radix-ui/react-dialog';
 import { Cross2Icon } from '@radix-ui/react-icons';
 import Image from 'next/image';
 import { useAccount, useBalance as useEthBalance } from 'wagmi';
 
+import useTokenState from '@/hooks/useTokenState';
 import { useMarkets } from '@/requests/hooks/useMarkets';
 import { usePortfolio } from '@/requests/hooks/usePortfolio';
 import { useTokenList } from '@/requests/hooks/useTokenList';
 import { searchToken } from '@/requests/requests';
 import { IBalanceToken, IToken, ITokenState } from '@/requests/types';
-import { compressAddress, formatNum, isBalanceToken } from '@/utils/func';
+import {
+  compressAddress,
+  formatNum,
+  formatPrice,
+  isBalanceToken,
+} from '@/utils/func';
 
 import styles from './index.module.scss';
 
@@ -29,6 +36,7 @@ export default function TokenListModal({
   trigger,
   tokenState,
   setTokenState,
+  isFirst,
 }: TokenListModalProps) {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { markets } = useMarkets();
@@ -37,6 +45,8 @@ export default function TokenListModal({
   const { data: ethBalance } = useEthBalance({ address });
   const [searchResults, setSearchResults] = useState<IToken[]>([]);
   const { tokenNameMap } = useTokenList();
+  // Used to disable the token if it's selected in the other token input
+  const { isCurrSelectedToken, isOtherSelectedToken } = useTokenState();
 
   const onSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -57,7 +67,9 @@ export default function TokenListModal({
 
   const tokenRow = (token: IToken, showAddress: boolean) => (
     <div
-      className={styles.tokenRow}
+      className={`${styles.tokenRow} ${
+        isCurrSelectedToken(token.address, isFirst) && styles.noPointerEvents
+      }`}
       key={token.address}
       onClick={() => onTokenClick(token)}
     >
@@ -80,16 +92,23 @@ export default function TokenListModal({
           <div className={styles.tokenBalance}>
             {token.symbol === 'ETH'
               ? formatNum(Number(ethBalance?.formatted), 4)
-              : token.balance.toFixed(2)}
+              : formatNum(token.balance, 2)}
           </div>
           <div className={styles.tokenPrice}>
-            {`$${
-              token.symbol === 'ETH'
-                ? formatNum(token.price.usd * Number(ethBalance?.formatted))
-                : formatNum(token.price.usd * token.balance)
-            }`}
+            {token.symbol === 'ETH'
+              ? formatPrice(token.price.usd * Number(ethBalance?.formatted))
+              : formatPrice(token.price.usd * token.balance)}
           </div>
         </div>
+      )}
+      {isCurrSelectedToken(token.address, isFirst) && (
+        <>
+          <div className={styles.disabled} />
+          <CheckIcon className={styles.check} height={24} width={24} />
+        </>
+      )}
+      {isOtherSelectedToken(token.address, isFirst) && (
+        <div className={styles.disabled} />
       )}
     </div>
   );
@@ -116,7 +135,7 @@ export default function TokenListModal({
                   <div className={styles.dividingLine} />
                   {markets.map(
                     (token) =>
-                      !portfolioSet.has(token.symbol) && tokenRow(token, false)
+                      !portfolioSet.has(token.address) && tokenRow(token, false)
                   )}
                 </>
               ) : (

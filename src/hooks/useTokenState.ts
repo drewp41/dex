@@ -29,8 +29,18 @@ const useTokenState = () => {
   // if it's an even number than first was changed, odd means second
   const [firstTokenChanged, setFirstTokenChanged] = useState(0);
 
+  const switchTokens = () => {
+    setTokenState({
+      first: tokenState!.second,
+      second: tokenState!.first,
+    });
+  };
+
   const setFirstTokenState = (newTokenState: ITokenState) => {
-    console.log('hi');
+    if (newTokenState.token?.address === tokenState!.second.token?.address) {
+      switchTokens();
+      return;
+    }
     setTokenState({
       first: newTokenState,
       second: tokenState!.second,
@@ -40,7 +50,10 @@ const useTokenState = () => {
   };
 
   const setSecondTokenState = (newTokenState: ITokenState) => {
-    console.log('bye');
+    if (newTokenState.token?.address === tokenState!.first.token?.address) {
+      switchTokens();
+      return;
+    }
     setTokenState({
       first: tokenState!.first,
       second: newTokenState,
@@ -49,14 +62,11 @@ const useTokenState = () => {
     setFirstTokenChanged((prev) => (prev % 2 === 0 ? prev + 1 : prev + 2));
   };
 
-  console.log(firstTokenChanged);
+  const isCurrSelectedToken = (address: `0x${string}`, isFirst: boolean) =>
+    tokenState?.[isFirst ? 'first' : 'second'].token?.address === address;
 
-  const switchTokens = () => {
-    setTokenState({
-      first: tokenState!.second,
-      second: tokenState!.first,
-    });
-  };
+  const isOtherSelectedToken = (address: `0x${string}`, isFirst: boolean) =>
+    tokenState?.[isFirst ? 'second' : 'first'].token?.address === address;
 
   return {
     tokenState,
@@ -65,6 +75,8 @@ const useTokenState = () => {
     setSecondTokenState,
     switchTokens,
     firstTokenChanged,
+    isCurrSelectedToken,
+    isOtherSelectedToken,
   };
 };
 

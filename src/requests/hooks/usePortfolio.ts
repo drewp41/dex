@@ -23,7 +23,7 @@ export function usePortfolio(address: `0x${string}` | undefined) {
     balance = [ETHER_TOKEN];
   }
 
-  const portfolioSet = new Set(balance.map((token) => token.symbol));
+  const portfolioSet = new Set(balance.map((token) => token.address));
 
   console.log(portfolioSet);
 

@@ -20,8 +20,7 @@ interface TokenInputProps {
 
 export default function TokenInput(props: TokenInputProps) {
   const { isFirst, tokenState, setTokenState } = props;
-  const [isTokenListModalOpen, setIsTokenListModalOpen] =
-    useState<boolean>(false);
+  const [isTokenListModalOpen, setIsTokenListModalOpen] = useState<boolean>(false);
   const { address } = useAccount();
   const { data: ethBalance } = useEthBalance({ address });
   const [isTokenPriceLoading, setIsTokenPriceLoading] = useState(false);
@@ -60,17 +59,11 @@ export default function TokenInput(props: TokenInputProps) {
   };
 
   const tokenPrice = () => {
-    if (
-      !tokenState.amount ||
-      tokenState.amount == '0' ||
-      tokenState.token == null
-    ) {
+    if (!tokenState.amount || tokenState.amount == '0' || tokenState.token == null) {
       return null;
     }
     if ('price' in tokenState.token && tokenState.token.price) {
-      return formatPrice(
-        Number(tokenState.amount) * tokenState.token.price.usd
-      );
+      return formatPrice(Number(tokenState.amount) * tokenState.token.price.usd);
     }
     return '$0.00';
   };
@@ -130,11 +123,7 @@ export default function TokenInput(props: TokenInputProps) {
               ) : (
                 <div className={styles.selectToken}>Select token</div>
               )}
-              <ChevronDownIcon
-                className={styles.chevron}
-                height={16}
-                width={16}
-              />
+              <ChevronDownIcon className={styles.chevron} height={16} width={16} />
             </button>
           }
         />

@@ -28,9 +28,7 @@ export default function SwapCard() {
   useEffect(() => {
     // Then update the second token
     if (firstTokenChanged % 2 === 0) {
-      console.log('first token changed');
     } else {
-      console.log('second token changed');
     }
   }, [firstTokenChanged]);
 
@@ -48,10 +46,7 @@ export default function SwapCard() {
             onAnimationEnd={() => setRotate(false)}
             onClick={onSwitchTokensClick}
           >
-            <ArrowsUpDownIcon
-              className={rotate ? styles.rotate : ''}
-              height={20}
-            />
+            <ArrowsUpDownIcon className={rotate ? styles.rotate : ''} height={20} />
           </div>
         </div>
         <TokenInput

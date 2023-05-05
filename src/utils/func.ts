@@ -18,8 +18,8 @@ export function isZeroInHex(hexString: string) {
 
 export function formatNum(num: number, digits = 2) {
   return num.toLocaleString(undefined, {
-    minimumFractionDigits: num >= 1000 ? 0 : digits,
-    maximumFractionDigits: num >= 1000 ? 0 : digits,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   });
 }
 
