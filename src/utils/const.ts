@@ -16,7 +16,7 @@ export const ETHER_TOKEN: IBalanceToken = {
   logoURI:
     'https://assets.coingecko.com/coins/images/279/large/ethereum.png?1595348880',
   chainId: 1,
-  address: '0x0',
+  address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
   decimals: 18,
   balance: 0,
   price: {

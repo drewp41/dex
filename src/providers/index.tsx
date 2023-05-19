@@ -2,12 +2,7 @@
 
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { ConnectKitProvider } from 'connectkit';
-import {
-  configureChains,
-  createClient,
-  createStorage,
-  WagmiConfig,
-} from 'wagmi';
+import { configureChains, createClient, createStorage, WagmiConfig } from 'wagmi';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import { MetaMaskConnector } from 'wagmi/connectors/metaMask';

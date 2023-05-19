@@ -79,3 +79,8 @@ export interface ITokenState {
   token: IBalanceToken | IToken | null;
   amount: string;
 }
+
+export interface IAllTokenState {
+  first: ITokenState;
+  second: ITokenState;
+}

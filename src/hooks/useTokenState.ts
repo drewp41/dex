@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 
-import { ITokenState } from '@/requests/types';
+import { IAllTokenState, ITokenState } from '@/requests/types';
 import { ETHER_TOKEN } from '@/utils/const';
-
-interface IAllTokenState {
-  first: ITokenState;
-  second: ITokenState;
-}
 
 const useTokenState = () => {
   const { data: tokenState, mutate: setTokenState } = useSWR<IAllTokenState>(
@@ -68,6 +63,9 @@ const useTokenState = () => {
   const isOtherSelectedToken = (address: `0x${string}`, isFirst: boolean) =>
     tokenState?.[isFirst ? 'second' : 'first'].token?.address === address;
 
+  const areBothTokensSet = () =>
+    tokenState?.first.token !== null && tokenState?.second.token !== null;
+
   return {
     tokenState,
     setTokenState,
@@ -77,6 +75,7 @@ const useTokenState = () => {
     firstTokenChanged,
     isCurrSelectedToken,
     isOtherSelectedToken,
+    areBothTokensSet,
   };
 };
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowsUpDownIcon } from '@heroicons/react/24/solid';
 
+import useSwap from '@/hooks/useSwap';
 import useTokenState from '@/hooks/useTokenState';
 
 import SwapBtn from './SwapBtn';
@@ -19,6 +20,8 @@ export default function SwapCard() {
     firstTokenChanged,
   } = useTokenState();
   const [rotate, setRotate] = useState(false);
+  const { getQuote } = useSwap();
+  const [isTokenQuantityLoading, setIsTokenQuantityLoading] = useState(false);
 
   const onSwitchTokensClick = () => {
     setRotate(true);
@@ -26,10 +29,21 @@ export default function SwapCard() {
   };
 
   useEffect(() => {
-    // Then update the second token
-    if (firstTokenChanged % 2 === 0) {
-    } else {
-    }
+    const fetchQuote = async () => {
+      // Then update the second token
+      if (firstTokenChanged % 2 === 0) {
+        setIsTokenQuantityLoading(true);
+        const quoteData = await getQuote();
+        setIsTokenQuantityLoading(false);
+        setSecondTokenState({
+          token: tokenState?.second.token!,
+          amount: quoteData?.quote.toFixed(8)!,
+        });
+      } else {
+        console.log('SECOND TOKEN CHANGED');
+      }
+    };
+    fetchQuote();
   }, [firstTokenChanged]);
 
   return (
@@ -51,6 +65,7 @@ export default function SwapCard() {
         </div>
         <TokenInput
           isFirst={false}
+          isTokenQuantityLoading={isTokenQuantityLoading}
           setTokenState={setSecondTokenState}
           tokenState={tokenState?.second!}
         />

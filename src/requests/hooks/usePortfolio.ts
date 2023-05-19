@@ -25,8 +25,6 @@ export function usePortfolio(address: `0x${string}` | undefined) {
 
   const portfolioSet = new Set(balance.map((token) => token.address));
 
-  console.log(portfolioSet);
-
   return {
     balance,
     portfolioSet,

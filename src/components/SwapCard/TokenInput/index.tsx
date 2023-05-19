@@ -16,10 +16,11 @@ interface TokenInputProps {
   isFirst: boolean;
   tokenState: ITokenState;
   setTokenState: (newTokenState: ITokenState) => void;
+  isTokenQuantityLoading?: boolean;
 }
 
 export default function TokenInput(props: TokenInputProps) {
-  const { isFirst, tokenState, setTokenState } = props;
+  const { isFirst, tokenState, setTokenState, isTokenQuantityLoading } = props;
   const [isTokenListModalOpen, setIsTokenListModalOpen] = useState<boolean>(false);
   const { address } = useAccount();
   const { data: ethBalance } = useEthBalance({ address });
@@ -92,14 +93,18 @@ export default function TokenInput(props: TokenInputProps) {
   return (
     <div className={styles.inputGroup}>
       <div className={styles.inputRowTop}>
-        <input
-          className={styles.input}
-          placeholder='0'
-          type='number'
-          value={tokenState.amount}
-          onChange={onAmountChange}
-          onKeyDown={blockCertainChars}
-        />
+        {isTokenQuantityLoading ? (
+          <Skeleton height={40} width={100} />
+        ) : (
+          <input
+            className={styles.input}
+            placeholder='0'
+            type='number'
+            value={tokenState.amount}
+            onChange={onAmountChange}
+            onKeyDown={blockCertainChars}
+          />
+        )}
         <TokenListModal
           closeModal={closeTokenListModal}
           isFirst={isFirst}
@@ -130,7 +135,11 @@ export default function TokenInput(props: TokenInputProps) {
       </div>
       <div className={styles.inputRowBottom}>
         <div className={styles.price}>
-          {isTokenPriceLoading ? <Skeleton width={50} /> : tokenPrice()}
+          {isTokenPriceLoading || isTokenQuantityLoading ? (
+            <Skeleton width={50} />
+          ) : (
+            tokenPrice()
+          )}
         </div>
         <div className={styles.balance}>
           {tokenState.amount !== null && (
